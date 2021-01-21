@@ -14,7 +14,7 @@ app.get('/', function (req, res) {
 const superagent= require('superagent');
 let gameList = [];
 
-superagent.get('https://www.xbox-now.com/zh/games-with-gold').end((err, res) => {
+superagent.get('http://www.xboxfan.com/topic?id=20').end((err, res) => {
   if (err) {
     console.log(`游戏列表抓取失败 - ${err}`)
   } else {
@@ -31,12 +31,12 @@ let getGame = (res) => {
   let $ = cheerio.load(res.text);
 
   // 找到目标数据所在的页面元素，获取数据
-  $('div.box-success .comparison-table-entry .box-title a').each((idx, ele) => {
+  $('.list-item .blocka').each((idx, ele) => {
     // cherrio中$('selector').each()用来遍历所有匹配到的DOM元素
     // 参数idx是当前遍历的元素的索引，ele就是当前便利的DOM元素
     let result = {
-      title: $(ele).text(),        // 获取新闻标题
-      href: $(ele).attr('href')    // 获取新闻网页链接
+      title: $(ele).find('.game_title').text(),        // 获取新闻标题
+      href: $(ele).find('img').attr('src')    // 获取新闻网页链接
     };
     gameList.push(result)              // 存入最终结果数组
   });
