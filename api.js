@@ -2,7 +2,6 @@
 
 console.log('开始工作');
 const puppeteer = require('puppeteer');
-
 const express = require('express');
 const app = express();
 
@@ -48,8 +47,10 @@ const app = express();
     });
     const page = await browser.newPage();
 
-
-    await page.goto('https://movie.douban.com/tv/#!type=tv&tag=%E6%97%A5%E6%9C%AC%E5%8A%A8%E7%94%BB&sort=recommend&page_limit=20&page_start=0');
+    // 近期热门动画
+    // await page.goto('https://movie.douban.com/tv/#!type=tv&tag=%E6%97%A5%E6%9C%AC%E5%8A%A8%E7%94%BB&sort=recommend&page_limit=20&page_start=0');
+    // 全部动漫列表
+    await page.goto('https://movie.douban.com/tag/#/?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB');
     await page.setViewport({
         width:1920,
         height:1080
@@ -58,6 +59,8 @@ const app = express();
     // 点击加载更多
     let times = 0;
     var flag = 'start';
+    
+    await page.click('.th-list');
     let getItems = setInterval(async()=>{
       if(times<=0){
         await page.click('.more');
@@ -66,105 +69,89 @@ const app = express();
         flag='start';
       }else{
         flag='finished';
-      }
-    },2000)
-    // await page.click('.more');
-    // console.log('加载更多');
-
-
-    // page.on('load',async()=>{
-    // // 点击加载更多
-    // await page.click('.more');
-    // console.log('加载更多');
-    // })
-
+        setTimeout(async() => {
+          // 等待页面搜索加载完成
+          // page.on('load',async()=>{
     
-    setTimeout(async() => {
-      // 等待页面搜索加载完成
-      // page.on('load',async()=>{
-        console.log('页面加载完成');
-
-        // 获取页面的图片列表
-        const information = await page.evaluate(()=>{
+          // 获取页面的图片列表
+          const information = await page.evaluate(()=>{
             // 获取图片
-            console.log('开始获取节点');
             const items = document.querySelectorAll('.item');
-            console.log('items',items);
             // 返回获取图片集合的src地址
             return Array.prototype.map.call(items,item=>{
               return{
-                title:item.querySelector('p').textContent.replace(/\s*/g,""),
-                score:item.querySelector('strong').innerHTML,
+                title:item.querySelector('.title').textContent,
+                score:item.querySelector('.rating').textContent,
                 src:item.querySelector('img').src,
                 href:item.href,
+                id:item.querySelector('.poster').dataset.id,
+                info:item.querySelector('.cast').innerHTML,
               }
             })
-        });
+          });
+    
+          console.log('information',information);
+    
+          // })
+    
+          // 从表里面插入内容
+          let dataBox = [];
+          //详情页面的url集合
+          let html = [];
+          information.map(current=>{
+            dataBox.push([current.title,current.score,current.src,current.href,current.id,current.info]);
+            html.push({
+              href:current.href,
+              id:current.id
+            })
+          });
+    
+          // let descBox = [];
+          // for (let i = 0; i < html.length; i++) {
+          //   await page.goto(html[i].href,{
+          //     waitUntil: [
+          //       'domcontentloaded',  //等待 “domcontentloaded” 事件触发
+          //       'networkidle0'       //在 500ms 内网络连接个数不超过 0 个
+          //     ]
+          //   });
+          //   await page.waitForSelector('#link-report', { timeout: 30000 });
+    
+          //   const result = await page.evaluate(() => {
+          //     const desc = document.querySelector('#link-report span').textContent;
+          //     return desc;
+          //   });
+          //   descBox.push({
+          //     desc:result,
+          //     id:html[i].id
+          //   });
+          //   detailBox.push({
 
-        // console.log('information',information);
-
-      // })
-
-      // 从表里面插入内容
-      let dataBox = [];
-      //详情页面的url集合
-      let html = [];
-      information.map(current=>{
-        dataBox.push([current.title,current.score,current.src]);
-        html.push(current.href)
-      });
-
-      
-      for (let i = 0; i < html.length; i++) {
-        await page.goto(html[i], { waitUntil: 'domcontentloaded' });
-        await page.waitForSelector('.article', { timeout: 5000 });
-
-        const result = await page.evaluate(() => {
-          const article = document.querySelector('.article');
-          console.log('article',article);
-          return article;
-        });
-        console.log('result',result)
-
-        // const result = await page.evaluate(() => {
-        //   console.log(1)
-        //   const article = document.querySelector('.article');
-        //   console.log('article',article);
-        //   return article;
-          // const desc = arr.querySelector('#link-report span').textContent;
-          // console.log('arr',arr)
-          // return arr.map(v => {
-          //   return {
-          //     naturalWidth: v.naturalWidth,
-          //     naturalHeight: v.naturalHeight,
-          //     width: v.width,
-          //     height: v.height,
-          //   };
-          // });
-        // });
-        // return result;
-        // arr = [ ...arr, ...doms ];
+          //   })
+          //   console.log('descBox',descBox);
+    
+          // }
+          app.get('/add',(req,res)=>{
+            let sql = `INSERT INTO animeBox(title,score,src,href,id,info) VALUES ?`;
+            db.query(sql,[dataBox],(err,result)=>{
+              if(err){
+                console.log('err',err);
+              }else{
+                console.log('result',result);
+                res.send('post内容成功');
+              }
+            })
+          });
+  
+          await page.evaluate(()=>{
+            window.location.href='http://127.0.0.1:8888/add'
+          })
+    
+          console.log('结束工作');
+        }, 10000);
       }
-        // app.get('/add',(req,res)=>{
-        //   let sql = `INSERT INTO animeList(title,score,src) VALUES ?`;
-        //   db.query(sql,[dataBox],(err,result)=>{
-        //     if(err){
-        //       console.log('err',err);
-        //     }else{
-        //       console.log('result',result);
-        //       res.send('post内容成功');
-        //     }
-        //   })
-        // });
+    },3000)
+    
 
-        // await page.evaluate(()=>{
-        //   window.location.href='http://127.0.0.1:8888/add'
-        // })
-        
-
-
-      console.log('结束工作');
-    }, 10000);
 
 })();
 
