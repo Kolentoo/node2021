@@ -1,3 +1,4 @@
+// 用于demo测试
 console.log('进入kolento.js');
 
 const express = require('express');
@@ -67,7 +68,7 @@ app.listen(3333,()=>{
 // 从表里面插入内容
 app.get('/add',(req,res)=>{
   let post = {title:'标题信息3',body:'内容信息3'};
-  let sql = "INSERT INTO content SET ?";
+  let sql = "INSERT INTO animeBox SET ?";
   db.query(sql,post,(err,result)=>{
     if(err){
       console.log('err',err);
@@ -80,7 +81,7 @@ app.get('/add',(req,res)=>{
 
 // 从表中查询数据
 app.get('/getContent',(req,res)=>{
-  let sql = 'SELECT * FROM content';
+  let sql = 'SELECT * FROM animeBox';
   db.query(sql,(err,result)=>{
     if(err){
       console.log('err',err);
@@ -95,7 +96,7 @@ app.get('/getContent',(req,res)=>{
 
 // 根据id查询内容
 app.get('/getContent/:id',(req,res)=>{
-  let sql = `SELECT * FROM content WHERE id = ${req.params.id}`;
+  let sql = `SELECT * FROM animeBox WHERE id = ${req.params.id}`;
   db.query(sql,(err,result)=>{
     if(err){
       console.log('err',err);
@@ -112,7 +113,7 @@ app.get('/getContent/:id',(req,res)=>{
 app.get('/update/:id',(req,res)=>{
   console.log('req的内容',req.params);
   console.log('req的内容',req.query);
-  let sql = `UPDATE content SET title = '${req.query.title}' WHERE id = ${req.params.id}`;
+  let sql = `UPDATE animeBox SET title = '${req.query.title}' WHERE id = ${req.params.id}`;
   db.query(sql,(err,result)=>{
     if(err){
       console.log('err',err);
@@ -126,7 +127,7 @@ app.get('/update/:id',(req,res)=>{
 
 // 删除数据
 app.get('/del',(req,res)=>{
-  let sql = `DELETE FROM content WHERE id = ${req.query.id}`;
+  let sql = `DELETE FROM animeBox WHERE id = ${req.query.id}`;
   db.query(sql,(err,result)=>{
     if(err){
       console.log(err)

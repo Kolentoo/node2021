@@ -1,5 +1,7 @@
 
 
+// 执行爬虫抓取近期动漫资讯
+
 console.log('开始工作');
 const puppeteer = require('puppeteer');
 const express = require('express');
@@ -41,7 +43,6 @@ const app = express();
       console.log('Your App is running', host, port);
     });
 
-
     const browser = await puppeteer.launch({
         headless: false,
     });
@@ -57,7 +58,7 @@ const app = express();
     });
 
     // 点击加载更多
-    let times = 0;
+    var times = 0;
     var flag = 'start';
     
     await page.click('.th-list');
@@ -69,6 +70,7 @@ const app = express();
         flag='start';
       }else{
         flag='finished';
+        clearInterval(getItems);
         setTimeout(async() => {
           // 等待页面搜索加载完成
           // page.on('load',async()=>{
@@ -106,6 +108,7 @@ const app = express();
             })
           });
     
+          // 进入列表对应的详情页逐个爬取简介 由于过于频繁导致ip异常暂不启用
           // let descBox = [];
           // for (let i = 0; i < html.length; i++) {
           //   await page.goto(html[i].href,{
@@ -130,24 +133,21 @@ const app = express();
           //   console.log('descBox',descBox);
     
           // }
-          app.get('/add',(req,res)=>{
-            let sql = `INSERT INTO animeBox(title,score,src,href,id,info) VALUES ?`;
-            db.query(sql,[dataBox],(err,result)=>{
-              if(err){
-                console.log('err',err);
-              }else{
-                console.log('result',result);
-                res.send('post内容成功');
-              }
-            })
-          });
-  
-          await page.evaluate(()=>{
-            window.location.href='http://127.0.0.1:8888/add'
+          // 将爬取的动漫list数据存入数据库
+          let sql = `INSERT INTO animebox(title,score,src,href,id,info) VALUES ?`;
+          db.query(sql,[dataBox],function(err,result){
+            if(err){
+              console.log('err',err);
+            }else{
+              console.log('result',result);
+            }
           })
+
     
           console.log('结束工作');
-        }, 10000);
+
+          
+        }, 5000);
       }
     },3000)
     
