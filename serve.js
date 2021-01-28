@@ -7,9 +7,9 @@ const app = express();
 // 建立数据库连接
 var mysql = require('mysql');
 var db = mysql.createConnection({
-  host     : 'localhost',
+  host     : '106.12.132.19',
   user     : 'root',
-  password : 'kolento123!',
+  password : 'root123!',
   port     : 3306,
   database : 'kolento'
 });
