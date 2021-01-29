@@ -324,6 +324,8 @@ app.use('/anime/:id',function(req,res){
 // 引入静态资源文件
 app.use(express.static('./public'));
 
+
+
 module.exports=app;
 
 
