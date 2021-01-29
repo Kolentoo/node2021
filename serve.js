@@ -124,9 +124,8 @@ app.get('/del',(req,res)=>{
   })
 })
 
-
 // 以下为转发的可用接口
-// 分类动漫列表
+// 分类动漫列表全部
 app.use('/anime/list/:start',function(req,res){
   var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}`;
   console.log('req',req);
@@ -152,7 +151,160 @@ app.use('/anime/hot/:start/:end',function(req,res){
   })
 });
 
-// 动画简介
+// 分类
+// 动漫剧情
+app.use('/anime/juqing/:start',function(req,res){
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E5%89%A7%E6%83%85`;
+  console.log('req',req);
+  request({
+    url:url,
+    method:'GET',
+    json:true
+  },function(_err,_res,_resBody){
+    res.json(_resBody);
+  })
+});
+
+// 动漫喜剧
+app.use('/anime/xiju/:start',function(req,res){
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E5%96%9C%E5%89%A7`;
+  console.log('req',req);
+  request({
+    url:url,
+    method:'GET',
+    json:true
+  },function(_err,_res,_resBody){
+    res.json(_resBody);
+  })
+});
+
+// 动漫动作
+app.use('/anime/dongzuo/:start',function(req,res){
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E5%8A%A8%E4%BD%9C`;
+  console.log('req',req);
+  request({
+    url:url,
+    method:'GET',
+    json:true
+  },function(_err,_res,_resBody){
+    res.json(_resBody);
+  })
+});
+
+// 动漫爱情
+app.use('/anime/dongzuo/:start',function(req,res){
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E7%88%B1%E6%83%85`;
+  console.log('req',req);
+  request({
+    url:url,
+    method:'GET',
+    json:true
+  },function(_err,_res,_resBody){
+    res.json(_resBody);
+  })
+});
+
+// 动漫科幻
+app.use('/anime/kehuan/:start',function(req,res){
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E7%A7%91%E5%B9%BB`;
+  console.log('req',req);
+  request({
+    url:url,
+    method:'GET',
+    json:true
+  },function(_err,_res,_resBody){
+    res.json(_resBody);
+  })
+});
+
+// 动漫悬疑
+app.use('/anime/xuanyi/:start',function(req,res){
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E6%82%AC%E7%96%91`;
+  console.log('req',req);
+  request({
+    url:url,
+    method:'GET',
+    json:true
+  },function(_err,_res,_resBody){
+    res.json(_resBody);
+  })
+});
+
+// 动漫惊悚
+app.use('/anime/jingsong/:start',function(req,res){
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E6%83%8A%E6%82%9A`;
+  console.log('req',req);
+  request({
+    url:url,
+    method:'GET',
+    json:true
+  },function(_err,_res,_resBody){
+    res.json(_resBody);
+  })
+});
+
+// 动漫恐怖
+app.use('/anime/kongbu/:start',function(req,res){
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E6%81%90%E6%80%96`;
+  console.log('req',req);
+  request({
+    url:url,
+    method:'GET',
+    json:true
+  },function(_err,_res,_resBody){
+    res.json(_resBody);
+  })
+});
+
+// 动漫冒险
+app.use('/anime/maoxian/:start',function(req,res){
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E5%86%92%E9%99%A9`;
+  console.log('req',req);
+  request({
+    url:url,
+    method:'GET',
+    json:true
+  },function(_err,_res,_resBody){
+    res.json(_resBody);
+  })
+});
+
+// 动漫犯罪
+app.use('/anime/fanzui/:start',function(req,res){
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E7%8A%AF%E7%BD%AA`;
+  console.log('req',req);
+  request({
+    url:url,
+    method:'GET',
+    json:true
+  },function(_err,_res,_resBody){
+    res.json(_resBody);
+  })
+});
+
+
+// 动漫国创
+app.use('/anime/china/:start',function(req,res){
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&countries=%E4%B8%AD%E5%9B%BD%E5%A4%A7%E9%99%86
+  `;
+  console.log('req',req);
+  request({
+    url:url,
+    method:'GET',
+    json:true
+  },function(_err,_res,_resBody){
+    res.json(_resBody);
+  })
+});
+
+
+
+
+
+
+
+
+// 剧目简介
 app.use('/anime/:id',function(req,res){
   var url = `https://movie.douban.com/j/subject_abstract?subject_id=${req.params.id}`;
   console.log('req',req);
@@ -164,6 +316,9 @@ app.use('/anime/:id',function(req,res){
     res.json(_resBody);
   })
 });
+
+
+
 
 
 // 引入静态资源文件

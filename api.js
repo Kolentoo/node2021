@@ -134,7 +134,7 @@ const app = express();
     
           // }
           // 将爬取的动漫list数据存入数据库
-          let sql = `INSERT INTO animebox(title,score,src,href,id,info) VALUES ?`;
+          let sql = `truncate table student;INSERT INTO animebox(title,score,src,href,id,info) VALUES ?`;
           db.query(sql,[dataBox],function(err,result){
             if(err){
               console.log('err',err);
@@ -149,7 +149,7 @@ const app = express();
           
         }, 5000);
       }
-    },3000)
+    },5000)
     
 
 
