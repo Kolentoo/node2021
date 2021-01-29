@@ -9,10 +9,11 @@ var mysql = require('mysql');
 var db = mysql.createConnection({
   host     : '106.12.132.19',
   user     : 'root',
-  password : 'root123!',
+  password : '123456',
   port     : 3306,
   database : 'kolento'
 });
+console.log('db',db);
  
 db.connect(err=>{
   if(err) throw err;
