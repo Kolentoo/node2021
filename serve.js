@@ -50,7 +50,7 @@ app.get('/add',(req,res)=>{
 });
 
 // 从表中查询数据
-app.get( `/anime/list/:start/:end`,(req,res)=>{
+app.get( `/anime/all/:start/:end`,(req,res)=>{
   // 查询所有
   // let sql = 'SELECT * FROM animebox'; 
   // 查询所有动漫数据中的20条
