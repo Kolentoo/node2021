@@ -1,6 +1,6 @@
 // 启动接口服务 需要时刻处于启动状态
 console.log('进入kolento.js');
-
+const request = require('request');
 const express = require('express');
 const app = express();
 
@@ -13,7 +13,6 @@ var db = mysql.createConnection({
   port     : 3306,
   database : 'kolento'
 });
-console.log('db',db);
  
 db.connect(err=>{
   if(err) throw err;
@@ -32,7 +31,6 @@ app.all("*",function(req,res,next){
   else
       next();
 })
-
 
 
 // 从表animebox里面插入内容
@@ -68,7 +66,7 @@ app.get( `/anime/all/:start/:end`,(req,res)=>{
 })
 
 // 根据id查询动漫内容
-app.get('/animeDetail/:id',(req,res)=>{
+app.get('/animeId/:id',(req,res)=>{
   let sql = `SELECT * FROM animebox WHERE id = ${req.params.id}`;
   db.query(sql,(err,result)=>{
     if(err){
