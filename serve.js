@@ -4,20 +4,20 @@ const request = require('request');
 const express = require('express');
 const app = express();
 
-// 建立数据库连接
-var mysql = require('mysql');
-var db = mysql.createConnection({
-  host     : '106.12.132.19',
-  user     : 'root',
-  password : '123456',
-  port     : 3306,
-  database : 'kolento'
-});
+// // 建立数据库连接
+// var mysql = require('mysql');
+// var db = mysql.createConnection({
+//   host     : '106.12.132.19',
+//   user     : 'root',
+//   password : '123456',
+//   port     : 3306,
+//   database : 'kolento'
+// });
  
-db.connect(err=>{
-  if(err) throw err;
-  console.log('数据库连接成功')
-});
+// db.connect(err=>{
+//   if(err) throw err;
+//   console.log('数据库连接成功')
+// });
 
 app.all("*",function(req,res,next){
   //设置允许跨域的域名，*代表允许任意域名跨域
