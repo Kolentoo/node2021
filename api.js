@@ -17,7 +17,7 @@ const schedule = require('node-schedule');
     var db = mysql.createConnection({
       host     : '106.12.132.19',
       user     : 'root',
-      password : '123456!',
+      password : '123456',
       port     : 3306,
       database : 'kolento'
     });
