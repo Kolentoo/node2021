@@ -15,9 +15,9 @@ const schedule = require('node-schedule');
     // 建立数据库连接
     var mysql = require('mysql');
     var db = mysql.createConnection({
-      host     : 'localhost',
+      host     : '106.12.132.19',
       user     : 'root',
-      password : 'kolento123!',
+      password : '123456!',
       port     : 3306,
       database : 'kolento'
     });
@@ -54,7 +54,7 @@ const schedule = require('node-schedule');
     // 近期热门动画
     // await page.goto('https://movie.douban.com/tv/#!type=tv&tag=%E6%97%A5%E6%9C%AC%E5%8A%A8%E7%94%BB&sort=recommend&page_limit=20&page_start=0');
     // 全部动漫列表
-    // schedule.scheduleJob('0 0 6 * * *',()=>{
+    schedule.scheduleJob('0 0 12 * * *',()=>{
       console.log('开始执行定时任务');
       await page.goto('https://movie.douban.com/tag/#/?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB');
       await page.setViewport({
@@ -155,7 +155,7 @@ const schedule = require('node-schedule');
           }, 5000);
         }
       },30000)
-    // }); 
+    }); 
     
 
 
