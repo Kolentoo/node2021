@@ -34,18 +34,18 @@ app.all("*",function(req,res,next){
 
 
 // 从表animebox里面插入内容
-app.get('/add',(req,res)=>{
-  let post = {title:'标题信息3',body:'内容信息3'};
-  let sql = "INSERT INTO animebox SET ?";
-  db.query(sql,post,(err,result)=>{
-    if(err){
-      console.log('err',err);
-    }else{
-      console.log('result',result);
-      res.send('post内容成功');
-    }
-  })
-});
+// app.get('/add',(req,res)=>{
+//   let post = {title:'标题信息3',body:'内容信息3'};
+//   let sql = "INSERT INTO animebox SET ?";
+//   db.query(sql,post,(err,result)=>{
+//     if(err){
+//       console.log('err',err);
+//     }else{
+//       console.log('result',result);
+//       res.send('post内容成功');
+//     }
+//   })
+// });
 
 // 从表中查询数据
 app.get( `/anime/all/:start/:end`,(req,res)=>{
@@ -96,33 +96,33 @@ app.get('/animeName/:title',(req,res)=>{
 })
 
 // 根据id更数据
-app.get('/update/:id',(req,res)=>{
-  console.log('req的内容',req.params);
-  console.log('req的内容',req.query);
-  let sql = `UPDATE animebox SET title = '${req.query.title}' WHERE id = ${req.params.id}`;
-  db.query(sql,(err,result)=>{
-    if(err){
-      console.log('err',err);
-    }else{
-      console.log('result',result);
-      // res.send('查询成功');
-      res.send('update'+req.params.id+'ok')
-    }
-  })
-})
+// app.get('/update/:id',(req,res)=>{
+//   console.log('req的内容',req.params);
+//   console.log('req的内容',req.query);
+//   let sql = `UPDATE animebox SET title = '${req.query.title}' WHERE id = ${req.params.id}`;
+//   db.query(sql,(err,result)=>{
+//     if(err){
+//       console.log('err',err);
+//     }else{
+//       console.log('result',result);
+//       // res.send('查询成功');
+//       res.send('update'+req.params.id+'ok')
+//     }
+//   })
+// })
 
 // 删除数据
-app.get('/del',(req,res)=>{
-  let sql = `DELETE FROM animebox WHERE id = ${req.query.id}`;
-  db.query(sql,(err,result)=>{
-    if(err){
-      console.log(err)
-    }else{
-      console.log('result',result);
-      res.send('del ok')
-    }
-  })
-})
+// app.get('/del',(req,res)=>{
+//   let sql = `DELETE FROM animebox WHERE id = ${req.query.id}`;
+//   db.query(sql,(err,result)=>{
+//     if(err){
+//       console.log(err)
+//     }else{
+//       console.log('result',result);
+//       res.send('del ok')
+//     }
+//   })
+// })
 
 // 以下为转发的可用接口
 // 分类动漫列表全部
@@ -298,14 +298,8 @@ app.use('/anime/china/:start',function(req,res){
 });
 
 
-
-
-
-
-
-
 // 剧目简介
-app.use('/anime/:id',function(req,res){
+app.use('/detail/:id',function(req,res){
   var url = `https://movie.douban.com/j/subject_abstract?subject_id=${req.params.id}`;
   console.log('req',req);
   request({
