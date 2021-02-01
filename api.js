@@ -174,7 +174,7 @@ const schedule = require('node-schedule');
 
 
   // 获取正在热映电影信息 每天4点更新
-  schedule.scheduleJob('0 4 * * * *',async()=>{
+  schedule.scheduleJob('0 0 4 * * *',async()=>{
     await page.goto('https://movie.douban.com/cinema/nowplaying/shanghai/');
     await page.setViewport({
         width:1920,
@@ -237,7 +237,7 @@ const schedule = require('node-schedule');
   }); 
 
   // 获取即将上映电影信息 每天6点更新
-  schedule.scheduleJob('0 6 * * * *',async()=>{
+  schedule.scheduleJob('0 0 6 * * *',async()=>{
     await page.goto('https://movie.douban.com/cinema/later/shanghai/');
     await page.setViewport({
         width:1920,
