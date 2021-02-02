@@ -5,7 +5,7 @@ let https = require("https");
 let fs = require("fs");
 
 // 早上七点30更新一次
-// schedule.scheduleJob('0 0 0 * * *',async()=>{
+schedule.scheduleJob('0 30 18 * * *',async()=>{
 // Configuare https引入证书相关文件
 const httpsOption = {
     key : fs.readFileSync("./public/SSL/Nginx/2_kolento.club.key"),
@@ -17,5 +17,5 @@ http.createServer(app).listen(80);
 // https默认443端口
 https.createServer(httpsOption, app).listen(443);
 
-// }); 
+}); 
 
