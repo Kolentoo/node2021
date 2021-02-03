@@ -40,11 +40,11 @@ const schedule = require('node-schedule');
         next();
   });
 
-  let server = app.listen(8888, function () {
-    let host = server.address().address;
-    let port = server.address().port;
-    console.log('Your App is running', host, port);
-  });
+  // let server = app.listen(8888, function () {
+  //   let host = server.address().address;
+  //   let port = server.address().port;
+  //   console.log('Your App is running', host, port);
+  // });
 
   const browser = await puppeteer.launch({
       headless: true,
@@ -57,7 +57,7 @@ const schedule = require('node-schedule');
     // await page.goto('https://movie.douban.com/tv/#!type=tv&tag=%E6%97%A5%E6%9C%AC%E5%8A%A8%E7%94%BB&sort=recommend&page_limit=20&page_start=0');
     // 全部动漫列表
   // 每天0点获取最新动漫信息列表
-  schedule.scheduleJob('0 38 16 * * *',async()=>{
+  schedule.scheduleJob('0 40 16 * * *',async()=>{
     console.log('开始执行定时任务');
     await page.goto('https://movie.douban.com/tag/#/?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB');
     await page.setViewport({
