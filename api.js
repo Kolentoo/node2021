@@ -48,13 +48,13 @@ const schedule = require('node-schedule');
 
   const browser = await puppeteer.launch({
       headless: true,
-      executablePath:puppeteer.executablePath(),
-      args: ['--disable-infobars','--no-sandbox', '--disable-setuid-sandbox'],
-      puppeteerOptions: {
-        ignoreHTTPSErrors: true,
-        dumpio: false,
-      }
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      // puppeteerOptions: {
+      //   ignoreHTTPSErrors: true,
+      //   dumpio: false,
+      // }
   });
+  console.log('运行pupeteer成功');
   const page = await browser.newPage();
 
     // 近期热门动画
