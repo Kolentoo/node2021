@@ -2,6 +2,9 @@
 
 // 执行爬虫抓取近期动漫
 
+// cdn购买腾讯云
+// https://cloud.tencent.com/act/pro/CDN-?fromSource=gwzcw.3687932.3687932.3687932&utm_medium=cpc&utm_id=gwzcw.3687932.3687932.3687932
+
 console.log('开始工作');
 const puppeteer = require('puppeteer');
 const express = require('express');

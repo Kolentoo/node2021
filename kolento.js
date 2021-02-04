@@ -1,4 +1,4 @@
-// 用于demo测试
+// 用于demo测试 接口demo
 console.log('进入kolento.js');
 
 const express = require('express');
