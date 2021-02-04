@@ -51,8 +51,23 @@ app.all("*",function(req,res,next){
 app.get( `/anime/all/:start/:end`,(req,res)=>{
   // 查询所有
   // let sql = 'SELECT * FROM animebox'; 
-  // 查询所有动漫数据中的20条
   let sql = `select * from animebox limit ${req.params.start},${req.params.end}`
+  db.query(sql,(err,result)=>{
+    if(err){
+      console.log('err',err);
+    }else{
+      console.log('result',result);
+      // res.send('查询成功');
+      let final = {'flag':'success',result}
+      res.json(final);
+    }
+  })
+})
+
+// 获取评分列表top100动画
+app.get( `/anime/ranking/:start/:end`,(req,res)=>{
+  // 查询所有前100条评分最高的动漫番剧
+  let sql = `select * from animebox order by score desc limit ${req.params.start},${req.params.end}`
   db.query(sql,(err,result)=>{
     if(err){
       console.log('err',err);
@@ -127,7 +142,7 @@ app.get('/animeName/:title',(req,res)=>{
 // 以下为转发的可用接口
 // 分类动漫列表全部
 app.use('/anime/list/:start',function(req,res){
-  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}`;
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,20&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}`;
   console.log('req',req);
   request({
     url:url,
@@ -154,7 +169,7 @@ app.use('/anime/hot/:start/:end',function(req,res){
 // 分类
 // 动漫剧情
 app.use('/anime/juqing/:start',function(req,res){
-  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E5%89%A7%E6%83%85`;
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,20&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E5%89%A7%E6%83%85`;
   console.log('req',req);
   request({
     url:url,
@@ -167,7 +182,7 @@ app.use('/anime/juqing/:start',function(req,res){
 
 // 动漫喜剧
 app.use('/anime/xiju/:start',function(req,res){
-  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E5%96%9C%E5%89%A7`;
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,20&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E5%96%9C%E5%89%A7`;
   console.log('req',req);
   request({
     url:url,
@@ -180,7 +195,7 @@ app.use('/anime/xiju/:start',function(req,res){
 
 // 动漫动作
 app.use('/anime/dongzuo/:start',function(req,res){
-  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E5%8A%A8%E4%BD%9C`;
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,20&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E5%8A%A8%E4%BD%9C`;
   console.log('req',req);
   request({
     url:url,
@@ -193,7 +208,7 @@ app.use('/anime/dongzuo/:start',function(req,res){
 
 // 动漫爱情
 app.use('/anime/dongzuo/:start',function(req,res){
-  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E7%88%B1%E6%83%85`;
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,20&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E7%88%B1%E6%83%85`;
   console.log('req',req);
   request({
     url:url,
@@ -206,7 +221,7 @@ app.use('/anime/dongzuo/:start',function(req,res){
 
 // 动漫科幻
 app.use('/anime/kehuan/:start',function(req,res){
-  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E7%A7%91%E5%B9%BB`;
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,20&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E7%A7%91%E5%B9%BB`;
   console.log('req',req);
   request({
     url:url,
@@ -219,7 +234,7 @@ app.use('/anime/kehuan/:start',function(req,res){
 
 // 动漫悬疑
 app.use('/anime/xuanyi/:start',function(req,res){
-  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E6%82%AC%E7%96%91`;
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,20&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E6%82%AC%E7%96%91`;
   console.log('req',req);
   request({
     url:url,
@@ -232,7 +247,7 @@ app.use('/anime/xuanyi/:start',function(req,res){
 
 // 动漫惊悚
 app.use('/anime/jingsong/:start',function(req,res){
-  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E6%83%8A%E6%82%9A`;
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,20&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E6%83%8A%E6%82%9A`;
   console.log('req',req);
   request({
     url:url,
@@ -245,7 +260,7 @@ app.use('/anime/jingsong/:start',function(req,res){
 
 // 动漫恐怖
 app.use('/anime/kongbu/:start',function(req,res){
-  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E6%81%90%E6%80%96`;
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,20&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E6%81%90%E6%80%96`;
   console.log('req',req);
   request({
     url:url,
@@ -258,7 +273,7 @@ app.use('/anime/kongbu/:start',function(req,res){
 
 // 动漫冒险
 app.use('/anime/maoxian/:start',function(req,res){
-  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E5%86%92%E9%99%A9`;
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,20&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E5%86%92%E9%99%A9`;
   console.log('req',req);
   request({
     url:url,
@@ -271,7 +286,7 @@ app.use('/anime/maoxian/:start',function(req,res){
 
 // 动漫犯罪
 app.use('/anime/fanzui/:start',function(req,res){
-  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E7%8A%AF%E7%BD%AA`;
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,20&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&genres=%E7%8A%AF%E7%BD%AA`;
   console.log('req',req);
   request({
     url:url,
@@ -282,10 +297,9 @@ app.use('/anime/fanzui/:start',function(req,res){
   })
 });
 
-
 // 动漫国创
 app.use('/anime/china/:start',function(req,res){
-  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&countries=%E4%B8%AD%E5%9B%BD%E5%A4%A7%E9%99%86
+  var url = `https://movie.douban.com/j/new_search_subjects?sort=U&range=0,20&tags=%E5%8A%A8%E6%BC%AB&start=${req.params.start}&countries=%E4%B8%AD%E5%9B%BD%E5%A4%A7%E9%99%86
   `;
   console.log('req',req);
   request({

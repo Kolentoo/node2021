@@ -75,7 +75,7 @@ const schedule = require('node-schedule');
     
     await page.click('.th-list');
     let getItems = setInterval(async()=>{
-      if(times<=0){
+      if(times<100){
         await page.click('.more');
         console.log('加载更多');
         times++;
