@@ -58,13 +58,37 @@ const schedule = require('node-schedule');
       // }
   });
   console.log('运行pupeteer成功');
-  const page = await browser.newPage();
+
+
+  // 进入登录页面
+  console.log('进入登录页');
+  var page = await browser.newPage();
+  await page.goto('https://accounts.douban.com/passport/login?source=movie');
+  await page.setViewport({
+      width:1920,
+      height:1080
+  });
+  await page.waitFor(2000);
+  await page.click('.account-tab-account');
+  await page.evaluate(()=>{
+    console.log('清空账号密码');
+    document.getElementById("username").value = "";
+    document.getElementById("password").value = "";
+    console.log('输入账号密码');
+    document.getElementById("username").value = '18019781126';
+    document.getElementById("password").value = "haojiyou123!";
+
+  });
+  await page.click('.account-tabcon-start .btn-account');
+  console.log('登录成功')
+
+  
 
     // 近期热门动画
     // await page.goto('https://movie.douban.com/tv/#!type=tv&tag=%E6%97%A5%E6%9C%AC%E5%8A%A8%E7%94%BB&sort=recommend&page_limit=20&page_start=0');
     // 全部动漫列表
   // 每天2点获取最新动漫信息列表
-  schedule.scheduleJob('0 0 10 * * *',async()=>{
+  schedule.scheduleJob('0 50 13 * * *',async()=>{
     console.log('开始执行定时任务');
     await page.goto('https://movie.douban.com/tag/#/?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB');
     await page.setViewport({
@@ -77,13 +101,21 @@ const schedule = require('node-schedule');
     var flag = 'start';
     
     await page.click('.th-list');
+    
     let getItems = setInterval(async()=>{
-      if(times<100){
-        await page.click('.more');
-        console.log('加载更多');
-        times++;
-        flag='start';
-        console.log('times',times);
+      if(times<3){
+        try{
+          console.log('开始等待节点生成')
+          await page.waitForSelector('.more:not(:empty)', { timeout: 60000 },{ visible: true });
+          await page.click('.more');
+          console.log('加载更多');
+          times++;
+          flag='start';
+          console.log('times',times);
+        }
+        catch(err){
+          console.log('出现错误',err);
+        }
       }else{
         console.log('加载完毕');
         flag='finished';
@@ -99,12 +131,12 @@ const schedule = require('node-schedule');
             // 返回获取图片集合的src地址
             return Array.prototype.map.call(items,item=>{
               return{
-                title:item.querySelector('.title').textContent,
-                score:item.querySelector('.rating').textContent,
-                src:item.querySelector('img').src,
-                href:item.href,
-                id:item.querySelector('.poster').dataset.id,
-                info:item.querySelector('.cast').innerHTML,
+                title:item.querySelector('.title')?item.querySelector('.title').textContent:'未知',
+                score:item.querySelector('.rating')?item.querySelector('.rating').textContent:'0',
+                src:item.querySelector('img')?item.querySelector('img').src:'',
+                href:item?item.href:'',
+                id:item.querySelector('.poster')?item.querySelector('.poster').dataset.id:'未知id',
+                info:item.querySelector('.cast')?item.querySelector('.cast').innerHTML:'暂无信息',
               }
             })
           });
