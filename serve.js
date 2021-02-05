@@ -48,10 +48,10 @@ app.all("*",function(req,res,next){
 // });
 
 // 从表中查询数据
-app.get( `/anime/all/:start/:end`,(req,res)=>{
+app.get( `/anime/all/:start/:num`,(req,res)=>{
   // 查询所有
   // let sql = 'SELECT * FROM animebox'; 
-  let sql = `select * from animebox limit ${req.params.start},${req.params.end}`
+  let sql = `select * from animebox limit ${req.params.start},${req.params.num}`
   db.query(sql,(err,result)=>{
     if(err){
       console.log('err',err);
@@ -65,9 +65,9 @@ app.get( `/anime/all/:start/:end`,(req,res)=>{
 })
 
 // 获取评分列表top100动画
-app.get( `/anime/ranking/:start/:end`,(req,res)=>{
+app.get( `/anime/ranking/:start/:num`,(req,res)=>{
   // 查询所有前100条评分最高的动漫番剧
-  let sql = `select * from animebox order by score desc limit ${req.params.start},${req.params.end}`
+  let sql = `select * from animebox order by score desc limit ${req.params.start},${req.params.num}`
   db.query(sql,(err,result)=>{
     if(err){
       console.log('err',err);
