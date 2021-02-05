@@ -64,7 +64,7 @@ const schedule = require('node-schedule');
     // await page.goto('https://movie.douban.com/tv/#!type=tv&tag=%E6%97%A5%E6%9C%AC%E5%8A%A8%E7%94%BB&sort=recommend&page_limit=20&page_start=0');
     // 全部动漫列表
   // 每天2点获取最新动漫信息列表
-  schedule.scheduleJob('0 39 9 * * *',async()=>{
+  schedule.scheduleJob('0 0 10 * * *',async()=>{
     console.log('开始执行定时任务');
     await page.goto('https://movie.douban.com/tag/#/?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB');
     await page.setViewport({
@@ -78,7 +78,7 @@ const schedule = require('node-schedule');
     
     await page.click('.th-list');
     let getItems = setInterval(async()=>{
-      if(times<1){
+      if(times<100){
         await page.click('.more');
         console.log('加载更多');
         times++;
