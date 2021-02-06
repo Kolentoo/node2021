@@ -88,7 +88,7 @@ const schedule = require('node-schedule');
     // await page.goto('https://movie.douban.com/tv/#!type=tv&tag=%E6%97%A5%E6%9C%AC%E5%8A%A8%E7%94%BB&sort=recommend&page_limit=20&page_start=0');
     // 全部动漫列表
   // 每天2点获取最新动漫信息列表
-  schedule.scheduleJob('0 10 15 * * *',async()=>{
+  // schedule.scheduleJob('0 10 15 * * *',async()=>{
     console.log('开始执行定时任务');
     await page.goto('https://movie.douban.com/tag/#/?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB');
     await page.setViewport({
@@ -214,7 +214,7 @@ const schedule = require('node-schedule');
         }, 5000);
       }
     },30000)
-  }); 
+  // }); 
 
 
   // 获取正在热映电影信息 每天4点更新

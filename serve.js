@@ -110,6 +110,36 @@ app.get('/animeName/:title',(req,res)=>{
   })
 })
 
+// 获取正在上映的电影
+app.get( `/movie/playing/:start/:num`,(req,res)=>{
+  let sql = `select * from playingbox limit ${req.params.start},${req.params.num}`
+  db.query(sql,(err,result)=>{
+    if(err){
+      console.log('err',err);
+    }else{
+      console.log('result',result);
+      // res.send('查询成功');
+      let final = {'flag':'success',result}
+      res.json(final);
+    }
+  })
+})
+
+// 获取即将上映电影
+app.get( `/movie/playing/:start/:num`,(req,res)=>{
+  let sql = `select * from commingbox limit ${req.params.start},${req.params.num}`
+  db.query(sql,(err,result)=>{
+    if(err){
+      console.log('err',err);
+    }else{
+      console.log('result',result);
+      // res.send('查询成功');
+      let final = {'flag':'success',result}
+      res.json(final);
+    }
+  })
+})
+
 // 根据id更数据
 // app.get('/update/:id',(req,res)=>{
 //   console.log('req的内容',req.params);
