@@ -126,7 +126,7 @@ app.get( `/movie/playing/:start/:num`,(req,res)=>{
 })
 
 // 获取即将上映电影
-app.get( `/movie/playing/:start/:num`,(req,res)=>{
+app.get( `/movie/comming/:start/:num`,(req,res)=>{
   let sql = `select * from commingbox limit ${req.params.start},${req.params.num}`
   db.query(sql,(err,result)=>{
     if(err){
