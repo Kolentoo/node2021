@@ -87,133 +87,134 @@ const schedule = require('node-schedule');
     // 近期热门动画
     // await page.goto('https://movie.douban.com/tv/#!type=tv&tag=%E6%97%A5%E6%9C%AC%E5%8A%A8%E7%94%BB&sort=recommend&page_limit=20&page_start=0');
     // 全部动漫列表
+    
   // 每天2点获取最新动漫信息列表
   // schedule.scheduleJob('0 10 15 * * *',async()=>{
-    console.log('开始执行定时任务');
-    await page.goto('https://movie.douban.com/tag/#/?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB');
-    await page.setViewport({
-        width:1920,
-        height:1080
-    });
+  //   console.log('开始执行定时任务');
+  //   await page.goto('https://movie.douban.com/tag/#/?sort=U&range=0,10&tags=%E5%8A%A8%E6%BC%AB');
+  //   await page.setViewport({
+  //       width:1920,
+  //       height:1080
+  //   });
 
-    // 点击加载更多
-    var times = 0;
-    var flag = 'start';
+  //   // 点击加载更多
+  //   var times = 0;
+  //   var flag = 'start';
     
-    await page.click('.th-list');
+  //   await page.click('.th-list');
     
-    let getItems = setInterval(async()=>{
-      if(times<100){
-        try{
-          console.log('开始等待节点生成')
-          await page.waitForSelector('.more:not(:empty)', { timeout: 120000 },{ visible: true });
-          await page.click('.more');
-          console.log('加载更多');
-          times++;
-          flag='start';
-          console.log('times',times);
-        }
-        catch(err){
-          console.log('出现错误',err);
-        }
-      }else{
-        console.log('加载完毕');
-        flag='finished';
-        clearInterval(getItems);
-        setTimeout(async() => {
-          // 等待页面搜索加载完成
-          // page.on('load',async()=>{
+  //   let getItems = setInterval(async()=>{
+  //     if(times<100){
+  //       try{
+  //         console.log('开始等待节点生成')
+  //         await page.waitForSelector('.more:not(:empty)', { timeout: 120000 },{ visible: true });
+  //         await page.click('.more');
+  //         console.log('加载更多');
+  //         times++;
+  //         flag='start';
+  //         console.log('times',times);
+  //       }
+  //       catch(err){
+  //         console.log('出现错误',err);
+  //       }
+  //     }else{
+  //       console.log('加载完毕');
+  //       flag='finished';
+  //       clearInterval(getItems);
+  //       setTimeout(async() => {
+  //         // 等待页面搜索加载完成
+  //         // page.on('load',async()=>{
     
-          // 获取页面的图片列表
-          const information = await page.evaluate(()=>{
-            // 获取图片
-            const items = document.querySelectorAll('.item');
-            // 返回获取图片集合的src地址
-            return Array.prototype.map.call(items,item=>{
-              return{
-                title:item.querySelector('.title')?item.querySelector('.title').textContent:'未知',
-                score:item.querySelector('.rating')?item.querySelector('.rating').textContent:'0',
-                src:item.querySelector('img')?item.querySelector('img').src:'',
-                href:item?item.href:'',
-                id:item.querySelector('.poster')?item.querySelector('.poster').dataset.id:'未知id',
-                info:item.querySelector('.cast')?item.querySelector('.cast').innerHTML:'暂无信息',
-              }
-            })
-          });
+  //         // 获取页面的图片列表
+  //         const information = await page.evaluate(()=>{
+  //           // 获取图片
+  //           const items = document.querySelectorAll('.item');
+  //           // 返回获取图片集合的src地址
+  //           return Array.prototype.map.call(items,item=>{
+  //             return{
+  //               title:item.querySelector('.title')?item.querySelector('.title').textContent:'未知',
+  //               score:item.querySelector('.rating')?item.querySelector('.rating').textContent:'0',
+  //               src:item.querySelector('img')?item.querySelector('img').src:'',
+  //               href:item?item.href:'',
+  //               id:item.querySelector('.poster')?item.querySelector('.poster').dataset.id:'未知id',
+  //               info:item.querySelector('.cast')?item.querySelector('.cast').innerHTML:'暂无信息',
+  //             }
+  //           })
+  //         });
     
-          console.log('information',information);
+  //         console.log('information',information);
     
-          // })
+  //         // })
     
-          // 从表里面插入内容
-          let dataBox = [];
-          //详情页面的url集合
-          let html = [];
-          information.map(current=>{
-            dataBox.push([current.title,current.score,current.src,current.href,current.id,current.info]);
-            html.push({
-              href:current.href,
-              id:current.id
-            })
-          });
+  //         // 从表里面插入内容
+  //         let dataBox = [];
+  //         //详情页面的url集合
+  //         let html = [];
+  //         information.map(current=>{
+  //           dataBox.push([current.title,current.score,current.src,current.href,current.id,current.info]);
+  //           html.push({
+  //             href:current.href,
+  //             id:current.id
+  //           })
+  //         });
     
-          // 进入列表对应的详情页逐个爬取简介 由于过于频繁导致ip异常暂不启用
-          // let descBox = [];
-          // for (let i = 0; i < html.length; i++) {
-          //   await page.goto(html[i].href,{
-          //     waitUntil: [
-          //       'domcontentloaded',  //等待 “domcontentloaded” 事件触发
-          //       'networkidle0'       //在 500ms 内网络连接个数不超过 0 个
-          //     ]
-          //   });
-          //   await page.waitForSelector('#link-report', { timeout: 30000 });
+  //         // 进入列表对应的详情页逐个爬取简介 由于过于频繁导致ip异常暂不启用
+  //         // let descBox = [];
+  //         // for (let i = 0; i < html.length; i++) {
+  //         //   await page.goto(html[i].href,{
+  //         //     waitUntil: [
+  //         //       'domcontentloaded',  //等待 “domcontentloaded” 事件触发
+  //         //       'networkidle0'       //在 500ms 内网络连接个数不超过 0 个
+  //         //     ]
+  //         //   });
+  //         //   await page.waitForSelector('#link-report', { timeout: 30000 });
     
-          //   const result = await page.evaluate(() => {
-          //     const desc = document.querySelector('#link-report span').textContent;
-          //     return desc;
-          //   });
-          //   descBox.push({
-          //     desc:result,
-          //     id:html[i].id
-          //   });
-          //   detailBox.push({
+  //         //   const result = await page.evaluate(() => {
+  //         //     const desc = document.querySelector('#link-report span').textContent;
+  //         //     return desc;
+  //         //   });
+  //         //   descBox.push({
+  //         //     desc:result,
+  //         //     id:html[i].id
+  //         //   });
+  //         //   detailBox.push({
 
-          //   })
-          //   console.log('descBox',descBox);
+  //         //   })
+  //         //   console.log('descBox',descBox);
     
-          // }
-          // 将爬取的动漫list数据存入数据库
+  //         // }
+  //         // 将爬取的动漫list数据存入数据库
 
-          db.query(`use kolento`,[dataBox],function(err1,result1){
-            if(err1){
-              console.log('err1',err1);
-            }else{
-              console.log('result1',result1)
-              db.query(`truncate table animebox`,[dataBox],function(err2,result2){
-                if(err2){
-                  console.log('err2',err2);
-                }else{
-                  console.log('result2',result2)
-                  db.query(`INSERT INTO animebox(title,score,src,href,id,info) VALUES ?`,[dataBox],function(err3,result3){
-                    if(err3){
-                      console.log('err3',err3);
-                    }else{
-                      console.log('result3',result3);
-                    }
-                  })
-                }
-              })
-            }
-          });
+  //         db.query(`use kolento`,[dataBox],function(err1,result1){
+  //           if(err1){
+  //             console.log('err1',err1);
+  //           }else{
+  //             console.log('result1',result1)
+  //             db.query(`truncate table animebox`,[dataBox],function(err2,result2){
+  //               if(err2){
+  //                 console.log('err2',err2);
+  //               }else{
+  //                 console.log('result2',result2)
+  //                 db.query(`INSERT INTO animebox(title,score,src,href,id,info) VALUES ?`,[dataBox],function(err3,result3){
+  //                   if(err3){
+  //                     console.log('err3',err3);
+  //                   }else{
+  //                     console.log('result3',result3);
+  //                   }
+  //                 })
+  //               }
+  //             })
+  //           }
+  //         });
           
-          await page.waitFor(2000);
-          await browser.close();
-          console.log('结束工作');
+  //         await page.waitFor(2000);
+  //         await browser.close();
+  //         console.log('结束工作');
 
           
-        }, 5000);
-      }
-    },30000)
+  //       }, 5000);
+  //     }
+  //   },30000)
   // }); 
 
 

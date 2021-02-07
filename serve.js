@@ -6,18 +6,28 @@ const app = express();
 
 // 建立数据库连接
 var mysql = require('mysql');
-var db = mysql.createConnection({
+// var db = mysql.createConnection({
+//   host     : '106.12.132.19',
+//   user     : 'root',
+//   password : '123456',
+//   port     : 3306,
+//   database : 'kolento'
+// });
+
+// db.connect(err=>{
+//   if(err) throw err;
+//   console.log('数据库连接成功')
+// });
+
+const pool = mysql.createPool({
   host     : '106.12.132.19',
   user     : 'root',
   password : '123456',
   port     : 3306,
   database : 'kolento'
 });
- 
-db.connect(err=>{
-  if(err) throw err;
-  console.log('数据库连接成功')
-});
+
+
 
 app.all("*",function(req,res,next){
   //设置允许跨域的域名，*代表允许任意域名跨域
@@ -27,10 +37,21 @@ app.all("*",function(req,res,next){
   //跨域允许的请求方式 
   res.header("Access-Control-Allow-Methods","DELETE,PUT,POST,GET,OPTIONS");
   if (req.method.toLowerCase() == 'options')
-      res.send(200);  //让options尝试请求快速结束
+    res.send(200);  //让options尝试请求快速结束
   else
-      next();
+    next();
 })
+
+//查询成功后关闭mysql
+function closeMysql(connect){
+  connect.end((err)=>{
+    if(err){
+        console.log(`mysql关闭失败:${err}!`);
+    }else{
+        console.log('mysql关闭成功!');
+    }
+});
+}
 
 
 // 从表animebox里面插入内容
@@ -47,85 +68,153 @@ app.all("*",function(req,res,next){
 //   })
 // });
 
-// 从表中查询数据
-app.get( `/anime/all/:start/:num`,(req,res)=>{
+// 所有热门动画名单
+app.get( `/anime/all/:start/:num`,(req,result)=>{
   // 查询所有
   // let sql = 'SELECT * FROM animebox'; 
-  let sql = `select * from animebox limit ${req.params.start},${req.params.num}`
-  db.query(sql,(err,result)=>{
-    if(err){
-    }else{
-      // res.send('查询成功');
-      let final = {'flag':'success',result}
-      res.json(final);
+  let sql = `select * from animebox limit ${req.params.start},${req.params.num}`;
+  // 从连接池中获取一个连接
+  pool.getConnection((err, conn) => {
+    if (err) {
+      console.log('和mysql数据库建立连接失败');
+    } else {
+      console.log('和mysql数据库连接成功');
+      conn.query(sql, (err2, res) => {
+        if (err2) {
+          console.log('查询数据库失败');
+        } else {
+          console.log(res);
+          let final = {'flag':'success',res}
+          result.json(final);
+          conn.release();
+          // pool.end();
+        }
+      })
     }
-  })
+  });
+  // db.query(sql,(err,result)=>{
+  //   if(err){
+  //   }else{
+  //     // res.send('查询成功');
+  //     let final = {'flag':'success',result}
+  //     res.json(final);
+  //   }
+  // })
 })
 
-// 获取评分列表top100动画
-app.get( `/anime/ranking/:start/:num`,(req,res)=>{
-  // 查询所有前100条评分最高的动漫番剧
-  let sql = `select * from animebox order by score desc limit ${req.params.start},${req.params.num}`
-  db.query(sql,(err,result)=>{
-    if(err){
-    }else{
-      // res.send('查询成功');
-      let final = {'flag':'success',result}
-      res.json(final);
+// 动画榜单数据
+app.get( `/anime/ranking/:start/:num`,(req,result)=>{
+  let sql = `select * from animebox order by score desc limit ${req.params.start},${req.params.num}`;
+  pool.getConnection((err, conn) => {
+    if (err) {
+      console.log('和mysql数据库建立连接失败');
+    } else {
+      console.log('和mysql数据库连接成功');
+      conn.query(sql, (err2, res) => {
+        if (err2) {
+          console.log('查询数据库失败');
+        } else {
+          console.log(res);
+          let final = {'flag':'success',res}
+          result.json(final);
+          conn.release();
+          // pool.end();
+        }
+      })
     }
-  })
+  });
 })
 
 // 根据id查询动漫内容
-app.get('/animeId/:id',(req,res)=>{
+app.get( `/animeId/:id`,(req,result)=>{
   let sql = `SELECT * FROM animebox WHERE id = ${req.params.id}`;
-  db.query(sql,(err,result)=>{
-    if(err){
-    }else{
-      // res.send('查询成功');
-      let final = {'flag':'success',result}
-      res.json(final);
+  pool.getConnection((err, conn) => {
+    if (err) {
+      console.log('和mysql数据库建立连接失败');
+    } else {
+      console.log('和mysql数据库连接成功');
+      conn.query(sql, (err2, res) => {
+        if (err2) {
+          console.log('查询数据库失败');
+        } else {
+          console.log(res);
+          let final = {'flag':'success',res}
+          result.json(final);
+          conn.release();
+          // pool.end();
+        }
+      })
     }
-  })
+  });
 })
 
-// 根据动漫名字查询内容
-app.get('/animeName/:title',(req,res)=>{
+// 根据名字title查询动漫内容
+app.get( `/animeName/:title`,(req,result)=>{
   let sql = `SELECT * FROM animebox WHERE title = ${req.params.title}`;
-  db.query(sql,(err,result)=>{
-    if(err){
-    }else{
-      // res.send('查询成功');
-      let final = {'flag':'success',result}
-      res.json(final);
+  pool.getConnection((err, conn) => {
+    if (err) {
+      console.log('和mysql数据库建立连接失败');
+    } else {
+      console.log('和mysql数据库连接成功');
+      conn.query(sql, (err2, res) => {
+        if (err2) {
+          console.log('查询数据库失败');
+        } else {
+          console.log(res);
+          let final = {'flag':'success',res}
+          result.json(final);
+          conn.release();
+          // pool.end();
+        }
+      })
     }
-  })
+  });
 })
 
 // 获取正在上映的电影
-app.get( `/movie/playing/:start/:num`,(req,res)=>{
+app.get( `/movie/playing/:start/:num`,(req,result)=>{
   let sql = `select * from playingbox limit ${req.params.start},${req.params.num}`
-  db.query(sql,(err,result)=>{
-    if(err){
-    }else{
-      // res.send('查询成功');
-      let final = {'flag':'success',result}
-      res.json(final);
+  pool.getConnection((err, conn) => {
+    if (err) {
+      console.log('和mysql数据库建立连接失败');
+    } else {
+      console.log('和mysql数据库连接成功');
+      conn.query(sql, (err2, res) => {
+        if (err2) {
+          console.log('查询数据库失败');
+        } else {
+          console.log(res);
+          let final = {'flag':'success',res}
+          result.json(final);
+          conn.release();
+          // pool.end();
+        }
+      })
     }
-  })
+  });
 })
 
-// 获取即将上映电影
-app.get( `/movie/comming/:start/:num`,(req,res)=>{
-  let sql = `select * from commingbox limit ${req.params.start},${req.params.num}`
-  db.query(sql,(err,result)=>{
-    if(err){
-    }else{
-      // res.send('查询成功');
-      let final = {'flag':'success',result}
-      res.json(final);
+// 获取正在上映的电影
+app.get( `/movie/comming/:start/:num`,(req,result)=>{
+  let sql = `select * from commingbox limit ${req.params.start},${req.params.num}`;
+  pool.getConnection((err, conn) => {
+    if (err) {
+      console.log('和mysql数据库建立连接失败');
+    } else {
+      console.log('和mysql数据库连接成功');
+      conn.query(sql, (err2, res) => {
+        if (err2) {
+          console.log('查询数据库失败');
+        } else {
+          console.log(res);
+          let final = {'flag':'success',res}
+          result.json(final);
+          conn.release();
+          // pool.end();
+        }
+      })
     }
-  })
+  });
 })
 
 // 根据id更数据
