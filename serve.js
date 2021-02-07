@@ -54,9 +54,7 @@ app.get( `/anime/all/:start/:num`,(req,res)=>{
   let sql = `select * from animebox limit ${req.params.start},${req.params.num}`
   db.query(sql,(err,result)=>{
     if(err){
-      console.log('err',err);
     }else{
-      console.log('result',result);
       // res.send('查询成功');
       let final = {'flag':'success',result}
       res.json(final);
@@ -70,9 +68,7 @@ app.get( `/anime/ranking/:start/:num`,(req,res)=>{
   let sql = `select * from animebox order by score desc limit ${req.params.start},${req.params.num}`
   db.query(sql,(err,result)=>{
     if(err){
-      console.log('err',err);
     }else{
-      console.log('result',result);
       // res.send('查询成功');
       let final = {'flag':'success',result}
       res.json(final);
@@ -85,9 +81,7 @@ app.get('/animeId/:id',(req,res)=>{
   let sql = `SELECT * FROM animebox WHERE id = ${req.params.id}`;
   db.query(sql,(err,result)=>{
     if(err){
-      console.log('err',err);
     }else{
-      console.log('result',result);
       // res.send('查询成功');
       let final = {'flag':'success',result}
       res.json(final);
@@ -100,9 +94,7 @@ app.get('/animeName/:title',(req,res)=>{
   let sql = `SELECT * FROM animebox WHERE title = ${req.params.title}`;
   db.query(sql,(err,result)=>{
     if(err){
-      console.log('err',err);
     }else{
-      console.log('result',result);
       // res.send('查询成功');
       let final = {'flag':'success',result}
       res.json(final);
@@ -115,9 +107,7 @@ app.get( `/movie/playing/:start/:num`,(req,res)=>{
   let sql = `select * from playingbox limit ${req.params.start},${req.params.num}`
   db.query(sql,(err,result)=>{
     if(err){
-      console.log('err',err);
     }else{
-      console.log('result',result);
       // res.send('查询成功');
       let final = {'flag':'success',result}
       res.json(final);
@@ -130,9 +120,7 @@ app.get( `/movie/comming/:start/:num`,(req,res)=>{
   let sql = `select * from commingbox limit ${req.params.start},${req.params.num}`
   db.query(sql,(err,result)=>{
     if(err){
-      console.log('err',err);
     }else{
-      console.log('result',result);
       // res.send('查询成功');
       let final = {'flag':'success',result}
       res.json(final);
