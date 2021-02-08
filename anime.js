@@ -1,5 +1,13 @@
 // 2021新番数据
 //https://mzh.moegirl.org.cn/%E6%97%A5%E6%9C%AC2021%E5%B9%B4%E5%86%AC%E5%AD%A3%E5%8A%A8%E7%94%BB
+// 2020年秋季
+// https://mzh.moegirl.org.cn/%E6%97%A5%E6%9C%AC2020%E5%B9%B4%E7%A7%8B%E5%AD%A3%E5%8A%A8%E7%94%BB
+// 2020夏季
+// https://mzh.moegirl.org.cn/%E6%97%A5%E6%9C%AC2020%E5%B9%B4%E5%A4%8F%E5%AD%A3%E5%8A%A8%E7%94%BB
+// 2020春
+// https://mzh.moegirl.org.cn/%E6%97%A5%E6%9C%AC2020%E5%B9%B4%E6%98%A5%E5%AD%A3%E5%8A%A8%E7%94%BB
+// 2020冬
+// https://mzh.moegirl.org.cn/%E6%97%A5%E6%9C%AC2020%E5%B9%B4%E5%86%AC%E5%AD%A3%E5%8A%A8%E7%94%BB
 
 
 console.log('开始工作');
@@ -47,7 +55,7 @@ const app = express();
   console.log('运行pupeteer成功');
   const page = await browser.newPage();
 
-  await page.goto('https://mzh.moegirl.org.cn/%E6%97%A5%E6%9C%AC2021%E5%B9%B4%E5%86%AC%E5%AD%A3%E5%8A%A8%E7%94%BB');
+  await page.goto('https://mzh.moegirl.org.cn/%E6%97%A5%E6%9C%AC2020%E5%B9%B4%E5%86%AC%E5%AD%A3%E5%8A%A8%E7%94%BB');
   // setTimeout(async() => {
     // 等待页面搜索加载完成
     // page.on('load',async()=>{
@@ -60,11 +68,11 @@ const app = express();
         // 排除标题和结尾推荐
         if(index!=0&&items.length-1!==index){
           return{
-            title:item.querySelectorAll('dl dd')[0]?item.querySelectorAll('dl dd')[0].querySelector('a').textContent:'未知',
+            title:item.querySelectorAll('dl dd')[0]&&item.querySelectorAll('dl dd')[0].querySelector('a')?item.querySelectorAll('dl dd')[0].querySelector('a').textContent:'未知',
             src:item.querySelector('.lazy-image-placeholder')?item.querySelector('.lazy-image-placeholder').dataset.src:'未知',
             playTime:item.querySelectorAll('dl dd')[1]?item.querySelectorAll('dl dd')[1].textContent:'未知',
             animeDesc:item.querySelector('.poem p')?item.querySelector('.poem p').textContent:'未知',
-            animeYear:'2021',
+            animeYear:'2020',
             animeMonth:'1'
           }
         }
@@ -76,6 +84,7 @@ const app = express();
     //详情页面的url集合
     information.map(current=>{
       if(current!=null){
+        if(current.title!='未知'&&current.src!=='未知')
         dataBox.push([current.title,current.src,current.playTime,current.animeDesc,current.animeYear,current.animeMonth]);
       }
     });
@@ -88,20 +97,27 @@ const app = express();
         console.log('err1',err1);
       }else{
         console.log('result1',result1)
-        db.query(`truncate table totalAnime`,[dataBox],function(err2,result2){
-          if(err2){
-            console.log('err2',err2);
+        db.query(`insert into totalAnime(title,src,playTime,animeDesc,animeYear,animeMonth) VALUES ?`,[dataBox],function(err3,result3){
+          if(err3){
+            console.log('err3',err3);
           }else{
-            console.log('result2',result2)
-            db.query(`insert into totalAnime(title,src,playTime,animeDesc,animeYear,animeMonth) VALUES ?`,[dataBox],function(err3,result3){
-              if(err3){
-                console.log('err3',err3);
-              }else{
-                console.log('result3',result3);
-              }
-            })
+            console.log('result3',result3);
           }
         })
+        // db.query(`truncate table totalAnime`,[dataBox],function(err2,result2){
+        //   if(err2){
+        //     console.log('err2',err2);
+        //   }else{
+        //     console.log('result2',result2)
+        //     db.query(`insert into totalAnime(title,src,playTime,animeDesc,animeYear,animeMonth) VALUES ?`,[dataBox],function(err3,result3){
+        //       if(err3){
+        //         console.log('err3',err3);
+        //       }else{
+        //         console.log('result3',result3);
+        //       }
+        //     })
+        //   }
+        // })
       }
     });
     
