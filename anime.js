@@ -1,12 +1,11 @@
 // 2021新番数据
-//https://www.acgmh.com/29488.html
+//https://mzh.moegirl.org.cn/%E6%97%A5%E6%9C%AC2021%E5%B9%B4%E5%86%AC%E5%AD%A3%E5%8A%A8%E7%94%BB
 
 
 console.log('开始工作');
 const puppeteer = require('puppeteer');
 const express = require('express');
 const app = express();
-const schedule = require('node-schedule');
 
 
 
@@ -48,39 +47,53 @@ const schedule = require('node-schedule');
   console.log('运行pupeteer成功');
   const page = await browser.newPage();
 
-  await page.goto('https://www.acgmh.com/29488.html');
-
-  setTimeout(async() => {
+  await page.goto('https://mzh.moegirl.org.cn/%E6%97%A5%E6%9C%AC2021%E5%B9%B4%E5%86%AC%E5%AD%A3%E5%8A%A8%E7%94%BB');
+  // setTimeout(async() => {
     // 等待页面搜索加载完成
     // page.on('load',async()=>{
 
-    // 获取页面的图片列表
     const information = await page.evaluate(()=>{
       // 获取图片
-      const items = document.querySelector('#content-innerText');
+      const items = document.querySelectorAll('.mw-parser-output .collapsible-block');
       // 返回获取图片集合的src地址
-      return{
-        time:'2021-01',
-        content:items.innerHTML
+      return Array.prototype.map.call(items,(item,index)=>{
+        // 排除标题和结尾推荐
+        if(index!=0&&items.length-1!==index){
+          return{
+            title:item.querySelectorAll('dl dd')[0]?item.querySelectorAll('dl dd')[0].querySelector('a').textContent:'未知',
+            src:item.querySelector('.lazy-image-placeholder')?item.querySelector('.lazy-image-placeholder').dataset.src:'未知',
+            playTime:item.querySelectorAll('dl dd')[1]?item.querySelectorAll('dl dd')[1].textContent:'未知',
+            animeDesc:item.querySelector('.poem p')?item.querySelector('.poem p').textContent:'未知',
+            animeYear:'2021',
+            animeMonth:'1'
+          }
+        }
+      })
+    });
+
+    // 从表里面插入内容
+    let dataBox = [];
+    //详情页面的url集合
+    information.map(current=>{
+      if(current!=null){
+        dataBox.push([current.title,current.src,current.playTime,current.animeDesc,current.animeYear,current.animeMonth]);
       }
     });
 
-    console.log('information',information);
-
-    // })
+    console.log('dataBox',dataBox);
 
 
-    db.query(`use kolento`,information,function(err1,result1){
+    db.query(`use kolento`,[dataBox],function(err1,result1){
       if(err1){
         console.log('err1',err1);
       }else{
         console.log('result1',result1)
-        db.query(`truncate table animeList`,information,function(err2,result2){
+        db.query(`truncate table totalAnime`,[dataBox],function(err2,result2){
           if(err2){
             console.log('err2',err2);
           }else{
             console.log('result2',result2)
-            db.query(`INSERT INTO animeList SET ?;`,information,function(err3,result3){
+            db.query(`insert into totalAnime(title,src,playTime,animeDesc,animeYear,animeMonth) VALUES ?`,[dataBox],function(err3,result3){
               if(err3){
                 console.log('err3',err3);
               }else{
@@ -97,7 +110,7 @@ const schedule = require('node-schedule');
     console.log('结束工作');
 
     
-  }, 5000);
+  // }, 5000);
 
     
 
