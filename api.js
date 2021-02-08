@@ -104,7 +104,7 @@ const schedule = require('node-schedule');
     await page.click('.th-list');
     
     let getItems = setInterval(async()=>{
-      if(times<100){
+      if(times<50){
         try{
           console.log('开始等待节点生成')
           await page.waitForSelector('.more:not(:empty)', { timeout: 120000 },{ visible: true });
@@ -143,7 +143,6 @@ const schedule = require('node-schedule');
             })
           });
     
-          console.log('information',information);
     
           // })
     
@@ -213,7 +212,7 @@ const schedule = require('node-schedule');
           console.log('结束工作');
 
           
-        }, 5000);
+        }, 30000);
       }
     },30000)
   // }); 
