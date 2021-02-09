@@ -72,15 +72,12 @@ const schedule = require('node-schedule');
               width:1920,
               height:1080
           });
-          // console.log('开始等待节点生成')
-          await page.waitForSelector('#browserItemList:not(:empty)', { timeout: 120000 },{ visible: true });
+
           console.log('进入下一页');
           pages++;
           console.log('pages',pages);
           const information = await page.evaluate(()=>{
-            // 获取图片
             const items = document.querySelectorAll('#browserItemList .item');
-            // 返回获取图片集合的src地址
             return Array.prototype.map.call(items,item=>{
               return{
                 id:item.querySelector('.subjectCover')?item.querySelector('.subjectCover').href.replace(/[^\d]/g,''):'暂无信息',
@@ -94,7 +91,7 @@ const schedule = require('node-schedule');
               }
             })
           });
-          // console.log('information',information);
+
           information.map(current=>{
             if(current.title!='暂无信息'&&current.src!='暂无信息'){
               dataBox.push([current.id,current.title,current.originName,current.info,current.score,current.src,current.num
@@ -137,7 +134,7 @@ const schedule = require('node-schedule');
 
         console.log('结束工作');
       }
-    },20000)
+    },30000)
   // }); 
 
 
