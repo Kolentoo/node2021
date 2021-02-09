@@ -67,7 +67,9 @@ const schedule = require('node-schedule');
           var page = await browser.newPage();
           
           console.log('开始执行');
-          await page.goto(`http://bgm.tv/anime/browser/tv/?sort=date&page=${pages}`);
+          await page.goto(`http://bgm.tv/anime/browser/tv/?sort=date&page=${pages}`,{
+            'timeout': 1000*60
+          });
           await page.setViewport({
               width:1920,
               height:1080
@@ -99,7 +101,7 @@ const schedule = require('node-schedule');
             }
           });
           await browser.close();
-          
+          console.log('本轮完成');
         }
         catch(err){
           console.log('出现错误',err);
