@@ -68,12 +68,15 @@ const app = express();
         // 排除标题和结尾推荐
         if(index!=0&&items.length-1!==index){
           return{
-            title:item.querySelectorAll('dl dd')[0]&&item.querySelectorAll('dl dd')[0].querySelector('a')?item.querySelectorAll('dl dd')[0].querySelector('a').textContent:'未知',
-            src:item.querySelector('.lazy-image-placeholder')?item.querySelector('.lazy-image-placeholder').dataset.src:'未知',
-            playTime:item.querySelectorAll('dl dd')[1]?item.querySelectorAll('dl dd')[1].textContent:'未知',
-            animeDesc:item.querySelector('.poem p')?item.querySelector('.poem p').textContent:'未知',
+            id:'202001'+index,
+            title:item.querySelectorAll('dl dd')[0]&&item.querySelectorAll('dl dd')[0].querySelector('a')?item.querySelectorAll('dl dd')[0].querySelector('a').textContent:'暂无信息',
+            src:item.querySelector('.lazy-image-placeholder')?item.querySelector('.lazy-image-placeholder').dataset.src:'暂无信息',
+            playTime:item.querySelectorAll('dl dd')[1]?item.querySelectorAll('dl dd')[1].textContent:'暂无信息',
+            animeDesc:item.querySelector('.poem p')?item.querySelector('.poem p').textContent:'暂无信息',
             animeYear:'2020',
-            animeMonth:'1'
+            animeMonth:'01',
+            score:'0',
+            type:'日本 / 动画'
           }
         }
       })
@@ -85,7 +88,8 @@ const app = express();
     information.map(current=>{
       if(current!=null){
         if(current.title!='未知'&&current.src!=='未知')
-        dataBox.push([current.title,current.src,current.playTime,current.animeDesc,current.animeYear,current.animeMonth]);
+        dataBox.push([current.id,current.title,current.src,current.playTime,current.animeDesc,current.animeYear,current.animeMonth,
+        current.score,current.type]);
       }
     });
 
@@ -97,7 +101,7 @@ const app = express();
         console.log('err1',err1);
       }else{
         console.log('result1',result1)
-        db.query(`insert into totalAnime(title,src,playTime,animeDesc,animeYear,animeMonth) VALUES ?`,[dataBox],function(err3,result3){
+        db.query(`insert into totalAnime(id,title,src,playTime,animeDesc,animeYear,animeMonth,score,type) VALUES ?`,[dataBox],function(err3,result3){
           if(err3){
             console.log('err3',err3);
           }else{
