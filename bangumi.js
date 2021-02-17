@@ -10,30 +10,37 @@ const schedule = require('node-schedule');
     
   // 建立数据库连接
   var mysql = require('mysql');
-  var db = mysql.createConnection({
+  // var db = mysql.createConnection({
+  //   host     : '106.12.132.19',
+  //   user     : 'root',
+  //   password : '123456',
+  //   port     : 3306,
+  //   database : 'kolento'
+  // });
+  
+  // db.connect(err=>{
+  //   if(err) throw err;
+  //   console.log('数据库连接成功')
+  // });
+
+  // db.on('error', function (err) {
+  //   console.log('db error监听数据库连接情况', err);
+  //   // 如果是连接断开，自动重新连接
+  //   if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+  //     db.connect(err=>{
+  //       if(err) throw err;
+  //       console.log('数据库重新连接成功')
+  //     });
+  //   } else {
+  //       throw err;
+  //   }
+  // });
+  const db = mysql.createPool({
     host     : '106.12.132.19',
     user     : 'root',
     password : '123456',
     port     : 3306,
     database : 'kolento'
-  });
-  
-  db.connect(err=>{
-    if(err) throw err;
-    console.log('数据库连接成功')
-  });
-
-  db.on('error', function (err) {
-    console.log('db error监听数据库连接情况', err);
-    // 如果是连接断开，自动重新连接
-    if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-      db.connect(err=>{
-        if(err) throw err;
-        console.log('数据库重新连接成功')
-      });
-    } else {
-        throw err;
-    }
   });
 
   app.all("*",function(req,res,next){
@@ -51,14 +58,14 @@ const schedule = require('node-schedule');
 
 
   console.log('运行pupeteer成功');
-  
+  db.getConnection((err, conn) => {
   // schedule.scheduleJob('0 10 15 * * *',async()=>{
     
    
-    var pages = 1;
+    var pages = 100;
     var dataBox = [];
     let getItems = setInterval(async()=>{
-      if(pages<100){
+      if(pages<250){
         try{
           const browser = await puppeteer.launch({
             headless: true,
@@ -87,9 +94,11 @@ const schedule = require('node-schedule');
                 originName:item.querySelector('.inner h3 .grey')?item.querySelector('.inner h3 .grey').textContent:'暂无信息',
                 info:item.querySelector('.inner .info')?item.querySelector('.inner .info').textContent:'暂无信息',
                 score:item.querySelector('.fade')?item.querySelector('.fade').textContent:'0',
-                src:item.querySelector('.image img')?item.querySelector('.image img').src:'暂无信息',
+                src:item.querySelector('.image img')?item.querySelector('.image img').src.replace('http','https'):'暂无信息',
                 num:item.querySelector('.inner .tip_j')?item.querySelector('.inner .tip_j').textContent:'暂无信息',
                 hot:item.querySelector('.inner .tip_j')?item.querySelector('.inner .tip_j').textContent.replace(/[^\d]/g,''):'0',
+                bigSrc:item.querySelector('.image img')?item.querySelector('.image img').src.replace('cover/s','cover/c').replace('http','https'):'暂无信息',
+                largeSrc:item.querySelector('.image img')?item.querySelector('.image img').src.replace('cover/s','cover/l').replace('http','https'):'暂无信息',
               }
             })
           });
@@ -97,7 +106,7 @@ const schedule = require('node-schedule');
           information.map(current=>{
             if(current.title!='暂无信息'&&current.src!='暂无信息'){
               dataBox.push([current.id,current.title,current.originName,current.info,current.score,current.src,current.num
-              ,current.hot]);
+              ,current.hot,current.bigSrc]);
             }
           });
           await browser.close();
@@ -117,27 +126,37 @@ const schedule = require('node-schedule');
             console.log('err1',err1);
           }else{
             console.log('result1',result1)
-            db.query(`truncate table bangumi`,[dataBox],function(err2,result2){
-              if(err2){
-                console.log('err2',err2);
+            db.query(`INSERT INTO bangumi(id,title,originName,info,score,src,num,hot,bigSrc) VALUES ?`,[dataBox],function(err3,result3){
+              if(err3){
+                console.log('err3',err3);
               }else{
-                console.log('result2',result2)
-                db.query(`INSERT INTO bangumi(id,title,originName,info,score,src,num,hot) VALUES ?`,[dataBox],function(err3,result3){
-                  if(err3){
-                    console.log('err3',err3);
-                  }else{
-                    console.log('result3',result3);
-                  }
-                })
+                console.log('result3',result3);
               }
             })
+            // db.query(`truncate table bangumi`,[dataBox],function(err2,result2){
+            //   if(err2){
+            //     console.log('err2',err2);
+            //   }else{
+            //     console.log('result2',result2)
+            //     db.query(`INSERT INTO bangumi(id,title,originName,info,score,src,num,hot,bigSrc) VALUES ?`,[dataBox],function(err3,result3){
+            //       if(err3){
+            //         console.log('err3',err3);
+            //       }else{
+            //         console.log('result3',result3);
+            //       }
+            //     })
+            //   }
+            // })
           }
         });  
 
         console.log('结束工作');
+        conn.release();
+        console.log('释放连接');
       }
-    },30000)
+    },20000)
   // }); 
+  });
 
 
     

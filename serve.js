@@ -148,6 +148,29 @@ app.get( `/animeId/:id`,(req,result)=>{
   });
 })
 
+// 根据id查询动漫内容
+app.get( `/detail/:id`,(req,result)=>{
+  let sql = `SELECT * FROM detail WHERE id = ${req.params.id}`;
+  pool.getConnection((err, conn) => {
+    if (err) {
+      console.log('和mysql数据库建立连接失败');
+    } else {
+      console.log('和mysql数据库连接成功');
+      conn.query(sql, (err2, res) => {
+        if (err2) {
+          console.log('查询数据库失败');
+        } else {
+          console.log(res);
+          let final = {'flag':'success',res}
+          result.json(final);
+          conn.release();
+          // pool.end();
+        }
+      })
+    }
+  });
+})
+
 // 根据名字title查询动漫内容
 app.get( `/animeName/:title`,(req,result)=>{
   let sql = `SELECT * FROM animebox WHERE title = ${req.params.title}`;
@@ -197,6 +220,32 @@ app.get( `/movie/playing/:start/:num`,(req,result)=>{
 // 获取正在上映的电影
 app.get( `/movie/comming/:start/:num`,(req,result)=>{
   let sql = `select * from commingbox limit ${req.params.start},${req.params.num}`;
+  pool.getConnection((err, conn) => {
+    if (err) {
+      console.log('和mysql数据库建立连接失败');
+    } else {
+      console.log('和mysql数据库连接成功');
+      conn.query(sql, (err2, res) => {
+        if (err2) {
+          console.log('查询数据库失败');
+        } else {
+          console.log(res);
+          let final = {'flag':'success',res}
+          result.json(final);
+          conn.release();
+          // pool.end();
+        }
+      })
+    }
+  });
+})
+
+// 全新数据库
+app.get( `/anime/all/:start/:num`,(req,result)=>{
+  // 查询所有
+  // let sql = 'SELECT * FROM animebox'; 
+  let sql = `select * from animebox limit ${req.params.start},${req.params.num}`;
+  // 从连接池中获取一个连接
   pool.getConnection((err, conn) => {
     if (err) {
       console.log('和mysql数据库建立连接失败');
