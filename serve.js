@@ -72,7 +72,7 @@ function closeMysql(connect){
 app.get( `/anime/all/:start/:num`,(req,result)=>{
   // 查询所有
   // let sql = 'SELECT * FROM animebox'; 
-  let sql = `select * from animebox limit ${req.params.start},${req.params.num}`;
+  let sql = `select * from bangumi limit ${req.params.start},${req.params.num}`;
   // 从连接池中获取一个连接
   pool.getConnection((err, conn) => {
     if (err) {
@@ -104,7 +104,7 @@ app.get( `/anime/all/:start/:num`,(req,result)=>{
 
 // 动画榜单数据
 app.get( `/anime/ranking/:start/:num`,(req,result)=>{
-  let sql = `select * from animebox order by score desc limit ${req.params.start},${req.params.num}`;
+  let sql = `select * from bangumi order by score desc limit ${req.params.start},${req.params.num}`;
   pool.getConnection((err, conn) => {
     if (err) {
       console.log('和mysql数据库建立连接失败');
@@ -127,7 +127,7 @@ app.get( `/anime/ranking/:start/:num`,(req,result)=>{
 
 // 根据id查询动漫内容
 app.get( `/animeId/:id`,(req,result)=>{
-  let sql = `SELECT * FROM animebox WHERE id = ${req.params.id}`;
+  let sql = `SELECT * FROM bangumi WHERE id = ${req.params.id}`;
   pool.getConnection((err, conn) => {
     if (err) {
       console.log('和mysql数据库建立连接失败');
@@ -173,7 +173,7 @@ app.get( `/detail/:id`,(req,result)=>{
 
 // 根据名字title查询动漫内容
 app.get( `/animeName/:title`,(req,result)=>{
-  let sql = `SELECT * FROM animebox WHERE title = ${req.params.title}`;
+  let sql = `SELECT * FROM bangumi WHERE title = ${req.params.title}`;
   pool.getConnection((err, conn) => {
     if (err) {
       console.log('和mysql数据库建立连接失败');
@@ -244,7 +244,7 @@ app.get( `/movie/comming/:start/:num`,(req,result)=>{
 app.get( `/anime/all/:start/:num`,(req,result)=>{
   // 查询所有
   // let sql = 'SELECT * FROM animebox'; 
-  let sql = `select * from animebox limit ${req.params.start},${req.params.num}`;
+  let sql = `select * from bangumi limit ${req.params.start},${req.params.num}`;
   // 从连接池中获取一个连接
   pool.getConnection((err, conn) => {
     if (err) {
