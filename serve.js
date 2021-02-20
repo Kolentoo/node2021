@@ -68,7 +68,7 @@ function closeMysql(connect){
 //   })
 // });
 
-// 所有热门动画名单
+// 所有最新动画名单
 app.get( `/anime/all/:start/:num`,(req,result)=>{
   // 查询所有
   // let sql = 'SELECT * FROM animebox'; 
@@ -102,9 +102,81 @@ app.get( `/anime/all/:start/:num`,(req,result)=>{
   // })
 })
 
+// 所有热门动画名单
+app.get( `/anime/popular/:start/:num`,(req,result)=>{
+  // 查询所有
+  // let sql = 'SELECT * FROM animebox'; 
+  let sql = `select * from bangumi order by hot desc limit ${req.params.start},${req.params.num}`;
+  // 从连接池中获取一个连接
+  pool.getConnection((err, conn) => {
+    if (err) {
+      console.log('和mysql数据库建立连接失败');
+    } else {
+      console.log('和mysql数据库连接成功');
+      conn.query(sql, (err2, res) => {
+        if (err2) {
+          console.log('查询数据库失败');
+        } else {
+          console.log(res);
+          let final = {'flag':'success',res}
+          result.json(final);
+          conn.release();
+          // pool.end();
+        }
+      })
+    }
+  });
+})
+
 // 动画榜单数据
 app.get( `/anime/ranking/:start/:num`,(req,result)=>{
-  let sql = `select * from bangumi order by score desc limit ${req.params.start},${req.params.num}`;
+  let sql = `select * from bangumi order by score desc,hot desc limit ${req.params.start},${req.params.num}`;
+  pool.getConnection((err, conn) => {
+    if (err) {
+      console.log('和mysql数据库建立连接失败');
+    } else {
+      console.log('和mysql数据库连接成功');
+      conn.query(sql, (err2, res) => {
+        if (err2) {
+          console.log('查询数据库失败');
+        } else {
+          console.log(res);
+          let final = {'flag':'success',res}
+          result.json(final);
+          conn.release();
+          // pool.end();
+        }
+      })
+    }
+  });
+})
+
+// 按年份查询动漫
+app.get( `/anime/year/:year/:start/:num`,(req,result)=>{
+  let sql = `select * from bangumi where info like '%${req.params.year}%' order by hot desc limit ${req.params.start},${req.params.num}`;
+  pool.getConnection((err, conn) => {
+    if (err) {
+      console.log('和mysql数据库建立连接失败');
+    } else {
+      console.log('和mysql数据库连接成功');
+      conn.query(sql, (err2, res) => {
+        if (err2) {
+          console.log('查询数据库失败');
+        } else {
+          console.log(res);
+          let final = {'flag':'success',res}
+          result.json(final);
+          conn.release();
+          // pool.end();
+        }
+      })
+    }
+  });
+})
+
+// 按年月份查询动漫
+app.get( `/anime/exact/:year/:month`,(req,result)=>{
+  let sql = `select * from bangumi where info like '%${req.params.year}年${req.params.month}%' order by hot desc`;
   pool.getConnection((err, conn) => {
     if (err) {
       console.log('和mysql数据库建立连接失败');
