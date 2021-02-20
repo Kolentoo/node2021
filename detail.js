@@ -42,23 +42,23 @@ const schedule = require('node-schedule');
   var dataResult = [];
   console.log('运行pupeteer成功');
   db.getConnection((err, conn) => {
-
-    let sql = `select id from bangumi limit 2001,5500`;
+    // distinct避免重复的数据
+    let sql = `select distinct id from bangumi limit 0,80`;
     // 从连接池中获取一个连接
     conn.query(sql, (err2, res) => {
     if (err2) {
             console.log('查询数据库失败');
         } else {
-            console.log('res',res);
+            // console.log('res',res);
             idBox=res;
             conn.release();
 
-            console.log('idBox',idBox);
+            // console.log('idBox',idBox);
 
             let end = idBox.length;
             let times = 0;
-            console.log('end',end);
-            console.log('idBox[times].id',idBox[times].id)
+            // console.log('end',end);
+            // console.log('idBox[times].id',idBox[times].id)
             let timeBox = setInterval(async()=>{
               if(times<end){
                 
@@ -70,8 +70,9 @@ const schedule = require('node-schedule');
                 
                 console.log('开始执行');
                 await page.goto(`https://bangumi.tv/subject/${idBox[times].id}`,{
-                  'timeout': 1000*60
+                  'timeout': 1000*90
                 });
+
 
                 await page.setViewport({
                     width:1920,
@@ -81,7 +82,7 @@ const schedule = require('node-schedule');
                 const information = await page.evaluate(()=>{
                   const item = document.querySelector('#subject_summary');
                   return {
-                    id:document.querySelector('.subject_prg a')?document.querySelector('.subject_prg a').href.replace(/[^\d]/g,''):'未知',
+                    id:document.querySelector('.subject_prg a')?document.querySelector('.subject_prg a').href.replace(/[^\d]/g,''):idBox[times].id,
                     detail:item?item.textContent:'暂无介绍'
                   }
                 });
@@ -109,7 +110,7 @@ const schedule = require('node-schedule');
                     console.log('err1',err1);
                   }else{
                     console.log('result1',result1)
-                    db.query(`INSERT INTO detail(id,content) VALUES ?`,[dataResult],function(err3,result3){
+                    db.query(`INSERT INTO content(id,content) VALUES ?`,[dataResult],function(err3,result3){
                       if(err3){
                         console.log('err3',err3);
                       }else{
