@@ -43,7 +43,7 @@ const schedule = require('node-schedule');
   console.log('运行pupeteer成功');
   db.getConnection((err, conn) => {
     // distinct避免重复的数据
-    let sql = `select distinct id from bangumi limit 0,80`;
+    let sql = `select distinct id from bangumi limit 63,3`;
     // 从连接池中获取一个连接
     conn.query(sql, (err2, res) => {
     if (err2) {
@@ -82,7 +82,7 @@ const schedule = require('node-schedule');
                 const information = await page.evaluate(()=>{
                   const item = document.querySelector('#subject_summary');
                   return {
-                    id:document.querySelector('.subject_prg a')?document.querySelector('.subject_prg a').href.replace(/[^\d]/g,''):idBox[times].id,
+                    id:document.querySelector('.subject_prg a')?document.querySelector('.subject_prg a').href.replace(/[^\d]/g,''):'未知',
                     detail:item?item.textContent:'暂无介绍'
                   }
                 });
