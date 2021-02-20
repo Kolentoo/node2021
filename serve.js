@@ -106,7 +106,7 @@ app.get( `/anime/all/:start/:num`,(req,result)=>{
 app.get( `/anime/popular/:start/:num`,(req,result)=>{
   // 查询所有
   // let sql = 'SELECT * FROM animebox'; 
-  let sql = "select * from bangumi order by CAST(`hot` AS DECIMAL) desc limit '+req.params.start+','+req.params.num;"
+  let sql = `select * from bangumi order by hot+0 desc limit ${req.params.start},${req.params.num}`;
   // 从连接池中获取一个连接
   pool.getConnection((err, conn) => {
     if (err) {
