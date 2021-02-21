@@ -10,31 +10,6 @@ const schedule = require('node-schedule');
     
   // 建立数据库连接
   var mysql = require('mysql');
-  // var db = mysql.createConnection({
-  //   host     : '106.12.132.19',
-  //   user     : 'root',
-  //   password : '123456',
-  //   port     : 3306,
-  //   database : 'kolento'
-  // });
-  
-  // db.connect(err=>{
-  //   if(err) throw err;
-  //   console.log('数据库连接成功')
-  // });
-
-  // db.on('error', function (err) {
-  //   console.log('db error监听数据库连接情况', err);
-  //   // 如果是连接断开，自动重新连接
-  //   if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-  //     db.connect(err=>{
-  //       if(err) throw err;
-  //       console.log('数据库重新连接成功')
-  //     });
-  //   } else {
-  //       throw err;
-  //   }
-  // });
   const db = mysql.createPool({
     host     : '106.12.132.19',
     user     : 'root',

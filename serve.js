@@ -312,6 +312,52 @@ app.get( `/movie/comming/:start/:num`,(req,result)=>{
   });
 })
 
+// 查询热映电影详情
+app.get( `/playing/:id`,(req,result)=>{
+  let sql = `select * from playingbox where id = ${req.params.id}`;
+  pool.getConnection((err, conn) => {
+    if (err) {
+      console.log('和mysql数据库建立连接失败');
+    } else {
+      console.log('和mysql数据库连接成功');
+      conn.query(sql, (err2, res) => {
+        if (err2) {
+          console.log('查询数据库失败');
+        } else {
+          console.log(res);
+          let final = {'flag':'success',res}
+          result.json(final);
+          conn.release();
+
+        }
+      })
+    }
+  });
+})
+
+// 查询即将上映电影详情
+app.get( `/comming/:id`,(req,result)=>{
+  let sql = `select * from commingbox where id = ${req.params.id}`;
+  pool.getConnection((err, conn) => {
+    if (err) {
+      console.log('和mysql数据库建立连接失败');
+    } else {
+      console.log('和mysql数据库连接成功');
+      conn.query(sql, (err2, res) => {
+        if (err2) {
+          console.log('查询数据库失败');
+        } else {
+          console.log(res);
+          let final = {'flag':'success',res}
+          result.json(final);
+          conn.release();
+
+        }
+      })
+    }
+  });
+})
+
 // 全新数据库
 app.get( `/anime/all/:start/:num`,(req,result)=>{
   // 查询所有
@@ -541,7 +587,7 @@ app.use('/anime/china/:start',function(req,res){
 
 
 // 剧目简介
-app.use('/detail/:id',function(req,res){
+app.use('/mdetail/:id',function(req,res){
   var url = `https://movie.douban.com/j/subject_abstract?subject_id=${req.params.id}`;
   console.log('req',req);
   request({

@@ -243,7 +243,7 @@ const schedule = require('node-schedule');
           actors:item.dataset.actors,
           release:item.dataset.release?item.dataset.release:null,
           comment:item.dataset.votecount?item.dataset.votecount:0,
-          href:item.querySelector('img').src,
+          href:item.querySelector('img').src?item.querySelector('img').src.replace('webp','jpg'):'',
           title:item.dataset.title,
           score:item.dataset.score?item.dataset.score:null,
         }
@@ -296,8 +296,8 @@ const schedule = require('node-schedule');
       // 返回获取图片集合的src地址
       return Array.prototype.map.call(box1,item=>{
         return{
-          id:item.querySelector('.thumb').href.replace(/[^\d]/g,' '),
-          href:item.querySelector('.thumb img').src,
+          id:item.querySelector('.thumb').href.replace(/[^\d]/g,''),
+          href:item.querySelector('.thumb img').src?item.querySelector('.thumb img').src.replace('webp','jpg'):'',
           title:item.querySelector('.intro a').textContent,
           playTime:item.querySelectorAll('.dt')[0].textContent,
           type:item.querySelectorAll('.dt')[1].textContent,
