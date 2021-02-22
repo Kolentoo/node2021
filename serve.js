@@ -176,7 +176,7 @@ app.get( `/anime/year/:year/:start/:num`,(req,result)=>{
 
 // 按年月份查询动漫
 app.get( `/anime/exact/:year/:month`,(req,result)=>{
-  let sql = `select * from bangumi where info like '%${req.params.year}年${req.params.month}%' order by hot desc`;
+  let sql = `select * from bangumi where info like '%${req.params.year}年${req.params.month}%月' order by hot desc`;
   pool.getConnection((err, conn) => {
     if (err) {
       console.log('和mysql数据库建立连接失败');
