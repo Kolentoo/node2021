@@ -257,7 +257,7 @@ const schedule = require('node-schedule');
     });
 
     console.log('movieData1',movieData1);
-    await page.waitFor(2000);
+    // await page.waitFor(2000);
     await browser.close();
 
     db.query(`use kolento`,[movieData1],function(err1,result1){
@@ -313,7 +313,7 @@ const schedule = require('node-schedule');
     });
 
     console.log('commingData',commingData);
-    await page.waitFor(2000);
+    // await page.waitFor(2000);
     await browser.close();
 
     db.query(`use kolento`,[commingData],function(err1,result1){
