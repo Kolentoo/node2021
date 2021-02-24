@@ -130,7 +130,7 @@ app.get( `/anime/popular/:start/:num`,(req,result)=>{
 
 // 动画榜单数据
 app.get( `/anime/ranking/:start/:num`,(req,result)=>{
-  let sql = `select * from bangumi order by score desc,hot desc limit ${req.params.start},${req.params.num}`;
+  let sql = `select * from bangumi order by score desc,hot+0 desc limit ${req.params.start},${req.params.num}`;
   pool.getConnection((err, conn) => {
     if (err) {
       console.log('和mysql数据库建立连接失败');
@@ -176,7 +176,7 @@ app.get( `/anime/year/:year/:start/:num`,(req,result)=>{
 
 // 按年月份查询动漫
 app.get( `/anime/exact/:year/:month`,(req,result)=>{
-  let sql = `select * from bangumi where info like '%${req.params.year}年${req.params.month}%月' order by hot desc`;
+  let sql = `select * from bangumi where info like '%${req.params.year}年${req.params.month}月%' order by hot desc`;
   pool.getConnection((err, conn) => {
     if (err) {
       console.log('和mysql数据库建立连接失败');
@@ -245,7 +245,7 @@ app.get( `/detail/:id`,(req,result)=>{
 
 // 根据名字title查询动漫内容
 app.get( `/animeName/:title`,(req,result)=>{
-  let sql = `SELECT * FROM bangumi WHERE title = ${req.params.title}`;
+  let sql = `SELECT * FROM bangumi where info like '%${req.params.title}%' order by hot desc`;
   pool.getConnection((err, conn) => {
     if (err) {
       console.log('和mysql数据库建立连接失败');

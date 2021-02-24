@@ -43,7 +43,7 @@ const schedule = require('node-schedule');
   console.log('运行pupeteer成功');
   db.getConnection((err, conn) => {
     // distinct避免重复的数据
-    let sql = `select distinct id from bangumi limit 2000,1000`;
+    let sql = `select distinct id from bangumi limit 4000,500`;
     // 从连接池中获取一个连接
     conn.query(sql, (err2, res) => {
     if (err2) {
