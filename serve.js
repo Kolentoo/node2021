@@ -245,7 +245,7 @@ app.get( `/detail/:id`,(req,result)=>{
 
 // 根据名字title查询动漫内容
 app.get( `/animeName/:title`,(req,result)=>{
-  let sql = `SELECT * FROM bangumi where info like '%${req.params.title}%' order by hot desc`;
+  let sql = `SELECT * FROM bangumi where title like '%${req.params.title}%' order by hot desc`;
   pool.getConnection((err, conn) => {
     if (err) {
       console.log('和mysql数据库建立连接失败');
