@@ -43,7 +43,7 @@ const schedule = require('node-schedule');
   console.log('运行pupeteer成功');
   db.getConnection((err, conn) => {
     // distinct避免重复的数据
-    let sql = `select distinct id from bangumi limit 4000,500`;
+    let sql = `select distinct id from bangumi limit 5500,188`;
     // 从连接池中获取一个连接
     conn.query(sql, (err2, res) => {
     if (err2) {
@@ -70,7 +70,7 @@ const schedule = require('node-schedule');
                 
                 console.log('开始执行');
                 await page.goto(`https://bangumi.tv/subject/${idBox[times].id}`,{
-                  'timeout': 1000*90
+                  'timeout': 1000*120
                 });
 
 
