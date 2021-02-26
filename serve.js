@@ -222,7 +222,7 @@ app.get( `/animeId/:id`,(req,result)=>{
 
 // 根据id查询动漫内容
 app.get( `/detail/:id`,(req,result)=>{
-  let sql = `SELECT * FROM detail WHERE id = ${req.params.id}`;
+  let sql = `SELECT * FROM content WHERE id = ${req.params.id}`;
   pool.getConnection((err, conn) => {
     if (err) {
       console.log('和mysql数据库建立连接失败');
@@ -289,7 +289,7 @@ app.get( `/movie/playing/:start/:num`,(req,result)=>{
   });
 })
 
-// 获取正在上映的电影
+// 获取即将上映的电影
 app.get( `/movie/comming/:start/:num`,(req,result)=>{
   let sql = `select * from commingbox limit ${req.params.start},${req.params.num}`;
   pool.getConnection((err, conn) => {
@@ -383,6 +383,136 @@ app.get( `/anime/all/:start/:num`,(req,result)=>{
     }
   });
 })
+
+// 剧目简介
+app.use('/mdetail/:id',function(req,res){
+  var url = `https://movie.douban.com/j/subject_abstract?subject_id=${req.params.id}`;
+  console.log('req',req);
+  request({
+    url:url,
+    method:'GET',
+    json:true
+  },function(_err,_res,_resBody){
+    res.json(_resBody);
+  })
+});
+
+// 查询用户
+app.get( `/user/detail/:name`,(req,result)=>{
+  // 查询所有
+  // let sql = 'SELECT * FROM animebox'; 
+  let sql = `select * from user where name = ${req.params.name}`;
+  // 从连接池中获取一个连接
+  pool.getConnection((err, conn) => {
+    if (err) {
+      console.log('和mysql数据库建立连接失败');
+    } else {
+      console.log('和mysql数据库连接成功');
+      conn.query(sql, (err2, res) => {
+        if (err2) {
+          console.log('查询数据库失败');
+        } else {
+          console.log(res);
+          let final = {'flag':'success',res}
+          result.json(final);
+          conn.release();
+          // pool.end();
+        }
+      })
+    }
+  });
+  // db.query(sql,(err,result)=>{
+  //   if(err){
+  //   }else{
+  //     // res.send('查询成功');
+  //     let final = {'flag':'success',result}
+  //     res.json(final);
+  //   }
+  // })
+})
+
+// 新增小程序用户
+app.get( `/addUser/:name/:sex/:country/:avatar`,(req,result)=>{
+  // 插入点击登录的用户
+  let sql = `insert into user(name,sex,country,avatar) output inserted.id values(${req.params.name},${req.params.sex},
+    ${req.params.country},${req.params.avatar});`
+  // 从连接池中获取一个连接
+  pool.getConnection((err, conn) => {
+    if (err) {
+      console.log('和mysql数据库建立连接失败');
+    } else {
+      console.log('和mysql数据库连接成功');
+      conn.query(sql, (err2, res1) => {
+        if (err2) {
+          console.log('查询数据库失败');
+        } else {
+          conn.query(`select @@identity`, (err2, res2) => {
+            if (err2) {
+              console.log('查询数据库失败');
+            } else {
+              console.log(res);
+              let final = {'flag':'success',res1,res2}
+              result.json(final);
+              conn.release();
+              // pool.end();
+            }
+          })
+        }
+      })
+    }
+  });
+})
+
+// 更新昵称
+app.get( `/updateUser/:id/:name`,(req,result)=>{
+  // 插入点击登录的用户
+  let sql = `UPDATE user SET name = '${req.query.name}' WHERE id = ${req.params.id}`;
+  // 从连接池中获取一个连接
+  pool.getConnection((err, conn) => {
+    if (err) {
+      console.log('和mysql数据库建立连接失败');
+    } else {
+      console.log('和mysql数据库连接成功');
+      conn.query(sql, (err2, res) => {
+        if (err2) {
+          console.log('查询数据库失败');
+        } else {
+          console.log(res);
+          let final = {'flag':'success',res}
+          result.json(final);
+          conn.release();
+          // pool.end();
+        }
+      })
+    }
+  });
+})
+
+// 用户添加收藏关注的番剧
+app.get( `/addAnime/:userId/:id`,(req,result)=>{
+  // 插入点击登录的用户
+  let sql = `insert into user(likeGroup,userId) values(${req.params.id},${req.params.userId});`
+  // 从连接池中获取一个连接
+  pool.getConnection((err, conn) => {
+    if (err) {
+      console.log('和mysql数据库建立连接失败');
+    } else {
+      console.log('和mysql数据库连接成功');
+      conn.query(sql, (err2, res) => {
+        if (err2) {
+          console.log('查询数据库失败');
+        } else {
+          console.log(res);
+          let final = {'flag':'success',res}
+          result.json(final);
+          conn.release();
+          // pool.end();
+        }
+      })
+    }
+  });
+})
+
 
 // 根据id更数据
 // app.get('/update/:id',(req,res)=>{
@@ -586,18 +716,7 @@ app.use('/anime/china/:start',function(req,res){
 });
 
 
-// 剧目简介
-app.use('/mdetail/:id',function(req,res){
-  var url = `https://movie.douban.com/j/subject_abstract?subject_id=${req.params.id}`;
-  console.log('req',req);
-  request({
-    url:url,
-    method:'GET',
-    json:true
-  },function(_err,_res,_resBody){
-    res.json(_resBody);
-  })
-});
+
 
 
 
