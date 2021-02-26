@@ -513,6 +513,57 @@ app.get( `/addAnime/:animeId/:id`,(req,result)=>{
   });
 })
 
+// 获取用户收藏的番剧
+app.get( `/likeBox/:id`,(req,result)=>{
+  // 插入点击登录的用户
+  let sql = `select likeGroup from user where id = ${req.params.id};`
+  // 从连接池中获取一个连接
+  pool.getConnection((err, conn) => {
+    if (err) {
+      console.log('和mysql数据库建立连接失败');
+    } else {
+      console.log('和mysql数据库连接成功');
+      conn.query(sql, (err2, res) => {
+        if (err2) {
+          console.log('查询数据库失败');
+        } else {
+          console.log(res);
+          let final = {'flag':'success',res}
+          result.json(final);
+          conn.release();
+          // pool.end();
+        }
+      })
+    }
+  });
+})
+
+// 根据多个id查询对应的信息
+app.get( `/amineBox/:idBox`,(req,result)=>{
+  // 插入点击登录的用户
+  let sql = `select * from bangumi where id in (${req.params.idBox});`
+  // 从连接池中获取一个连接
+  pool.getConnection((err, conn) => {
+    if (err) {
+      console.log('和mysql数据库建立连接失败');
+    } else {
+      console.log('和mysql数据库连接成功');
+      conn.query(sql, (err2, res) => {
+        if (err2) {
+          console.log('查询数据库失败');
+        } else {
+          console.log(res);
+          let final = {'flag':'success',res}
+          result.json(final);
+          conn.release();
+          // pool.end();
+        }
+      })
+    }
+  });
+})
+
+
 
 // 根据id更数据
 // app.get('/update/:id',(req,res)=>{
