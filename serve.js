@@ -489,9 +489,9 @@ app.get( `/updateUser/:id/:name`,(req,result)=>{
 })
 
 // 用户添加收藏关注的番剧
-app.get( `/addAnime/:userId/:id`,(req,result)=>{
+app.get( `/addAnime/:animeId/:id`,(req,result)=>{
   // 插入点击登录的用户
-  let sql = `insert into user(likeGroup,userId) values(${req.params.id},${req.params.userId});`
+  let sql = `insert into user(likeGroup,id) values(${req.params.animeId},${req.params.id});`
   // 从连接池中获取一个连接
   pool.getConnection((err, conn) => {
     if (err) {
