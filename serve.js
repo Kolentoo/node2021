@@ -434,7 +434,7 @@ app.get( `/user/detail/:name`,(req,result)=>{
 // 新增小程序用户
 app.get( `/addUser/:name/:sex/:country/:avatar`,(req,result)=>{
   // 插入点击登录的用户
-  let sql = `insert into user(name,sex,country,avatar) output inserted.id values(${req.params.name},${req.params.sex},
+  let sql = `insert into user(name,sex,country,avatar) values(${req.params.name},${req.params.sex},
     ${req.params.country},${req.params.avatar});`
   // 从连接池中获取一个连接
   pool.getConnection((err, conn) => {
