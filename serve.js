@@ -442,15 +442,16 @@ app.get( `/addUser/:name/:sex/:country/:avatar`,(req,result)=>{
       console.log('和mysql数据库建立连接失败');
     } else {
       console.log('和mysql数据库连接成功');
-      conn.query(sql, (err2, res1) => {
-        if (err2) {
+      conn.query(sql, (err1, res1) => {
+        if (err1) {
           console.log('查询数据库失败');
         } else {
+          console.log(1)
           conn.query(`select @@identity`, (err2, res2) => {
             if (err2) {
               console.log('查询数据库失败');
             } else {
-              console.log(res);
+              console.log(res2);
               let final = {'flag':'success',res1,res2}
               result.json(final);
               conn.release();
