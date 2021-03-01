@@ -3,6 +3,11 @@ console.log('进入kolento.js');
 const request = require('request');
 const express = require('express');
 const app = express();
+var bodyParser= require('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
 
 // 建立数据库连接
 var mysql = require('mysql');
@@ -431,11 +436,14 @@ app.get( `/user/detail/:name`,(req,result)=>{
   // })
 })
 
+
 // 新增小程序用户
-app.get( `/addUser/:name/:sex/:country/:avatar`,(req,result)=>{
+app.post( `/addUser`,(req,result)=>{
   // 插入点击登录的用户
-  let sql = `insert into user(name,sex,country,avatar) values(${req.params.name},${req.params.sex},
-    ${req.params.country},${req.params.avatar});`
+  console.log('req',req);
+  
+  let sql = `insert into user(name,sex,country,avatar) values(${req.body.name},${req.body.sex},
+    ${req.body.country},${req.body.avatar});`
   // 从连接池中获取一个连接
   pool.getConnection((err, conn) => {
     if (err) {
@@ -446,13 +454,13 @@ app.get( `/addUser/:name/:sex/:country/:avatar`,(req,result)=>{
         if (err1) {
           console.log('查询数据库失败');
         } else {
-          console.log(1)
           conn.query(`select @@identity`, (err2, res2) => {
             if (err2) {
               console.log('查询数据库失败');
             } else {
               console.log(res2);
               let final = {'flag':'success',res1,res2}
+              console.log('result',);
               result.json(final);
               conn.release();
               // pool.end();
