@@ -440,10 +440,15 @@ app.get( `/user/detail/:name`,(req,result)=>{
 // 新增小程序用户
 app.post( `/addUser`,(req,result)=>{
   // 插入点击登录的用户
-  console.log('req',req);
+  console.log('req',req.body);
+  let url = req.body.avatar;
+  let name = req.body.name.replace(/\s+/g,"-");
+  console.log('url',url);
+  console.log('name',name);
   
-  let sql = `insert into user(name,sex,country,avatar) values(${req.body.name},${req.body.sex},
-    ${req.body.country},${req.body.avatar});`
+  let sql = `insert into user(name,sex,country,avatar) values(${name},${req.body.sex},
+    ${req.body.country},${url});`
+    
   // 从连接池中获取一个连接
   pool.getConnection((err, conn) => {
     if (err) {
@@ -452,15 +457,15 @@ app.post( `/addUser`,(req,result)=>{
       console.log('和mysql数据库连接成功');
       conn.query(sql, (err1, res1) => {
         if (err1) {
-          console.log('查询数据库失败');
+          console.log('查询数据库失败err1',err1);
         } else {
           conn.query(`select @@identity`, (err2, res2) => {
             if (err2) {
-              console.log('查询数据库失败');
+              console.log('查询数据库失败err2',err2);
             } else {
               console.log(res2);
               let final = {'flag':'success',res1,res2}
-              console.log('result',);
+              console.log('result',final);
               result.json(final);
               conn.release();
               // pool.end();
