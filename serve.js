@@ -436,18 +436,64 @@ app.get( `/user/detail/:name`,(req,result)=>{
   // })
 })
 
+// 小程序登录
+app.get( `/login/:code`,(req,result)=>{
+  // 插入点击登录的用户
+  console.log('req',req.params);
+  let APPID = 'wxf64cb2d137c2a292';
+  let SECRET = '61ff053b3a73ef830f856299e69eba17';
+  
+  request(`https://api.weixin.qq.com/sns/jscode2session?appid=${APPID}&secret=${SECRET}&js_code=${req.params.code}&grant_type=authorization_code`, function(err, response, body){
+    //err 当前接口请求错误信息
+    //response 一般使用statusCode来获取接口的http的执行状态
+    //body 当前接口response返回的具体数据 返回的是一个jsonString类型的数据 
+    //需要通过JSON.parse(body)来转换
+    if(!err && response.statusCode == 200){
+      //todoJSON.parse(body)
+      var res = JSON.parse(body);
+      let final = {'flag':'success',res}
+      console.log('res',res);
+      result.json(final);
+    }
+  })
+});
+
+// 查询用户是否存在
+app.get( `/user/openid/:openid`,(req,result)=>{
+  // 查询所有
+  console.log('req.params',req.params);
+  let sql = `select * from user where openid = '${req.params.openid}'`;
+  // 从连接池中获取一个连接
+  pool.getConnection((err, conn) => {
+    if (err) {
+      console.log('和mysql数据库建立连接失败');
+    } else {
+      console.log('和mysql数据库连接成功');
+      conn.query(sql, (err2, res) => {
+        if (err2) {
+          console.log('查询数据库失败',err2);
+        } else {
+          console.log(res);
+          let final = {'flag':'success',res}
+          result.json(final);
+          conn.release();
+          // pool.end();
+        }
+      })
+    }
+  });
+})
 
 // 新增小程序用户
 app.post( `/addUser`,(req,result)=>{
   // 插入点击登录的用户
   console.log('req',req.body);
   let url = req.body.avatar;
-  let name = req.body.name.replace(/\s+/g,"-");
+  let name = req.body.name.replace(/\s+/g," ");
   console.log('url',url);
   console.log('name',name);
   
-  let sql = `insert into user(name,sex,country,avatar) values(${name},${req.body.sex},
-    ${req.body.country},${url});`
+  let sql = `insert into user(name,sex,country,avatar,openid) values('${name}',${req.body.sex},'${req.body.country}','${req.body.avatar}','${req.body.openid}');`
     
   // 从连接池中获取一个连接
   pool.getConnection((err, conn) => {
@@ -459,7 +505,7 @@ app.post( `/addUser`,(req,result)=>{
         if (err1) {
           console.log('查询数据库失败err1',err1);
         } else {
-          conn.query(`select @@identity`, (err2, res2) => {
+          conn.query(`select @@identity as id`, (err2, res2) => {
             if (err2) {
               console.log('查询数据库失败err2',err2);
             } else {
@@ -503,9 +549,9 @@ app.get( `/updateUser/:id/:name`,(req,result)=>{
 })
 
 // 用户添加收藏关注的番剧
-app.get( `/addAnime/:animeId/:id`,(req,result)=>{
-  // 插入点击登录的用户
-  let sql = `insert into user(likeGroup,id) values(${req.params.animeId},${req.params.id});`
+app.get( `/addAnime/:animeId/:id/:type`,(req,result)=>{
+  console.log('req.params',req.params);
+  let sql = `UPDATE user SET likeGroup = CONCAT(likeGroup,',${req.params.animeId}') WHERE id = ${req.params.id}`;
   // 从连接池中获取一个连接
   pool.getConnection((err, conn) => {
     if (err) {
@@ -514,7 +560,7 @@ app.get( `/addAnime/:animeId/:id`,(req,result)=>{
       console.log('和mysql数据库连接成功');
       conn.query(sql, (err2, res) => {
         if (err2) {
-          console.log('查询数据库失败');
+          console.log('查询数据库失败',err2);
         } else {
           console.log(res);
           let final = {'flag':'success',res}
@@ -551,6 +597,32 @@ app.get( `/likeBox/:id`,(req,result)=>{
     }
   });
 })
+
+// 判断用户是否收藏
+// app.get( `/likeGroup/:animeId`,(req,result)=>{
+//   console.log('req.params',req.params);
+//   let sql = `select  *  from user where CHARINDEX('${req.params.animeId}',likeGroup)>0`;
+//   // 从连接池中获取一个连接
+//   pool.getConnection((err, conn) => {
+//     if (err) {
+//       console.log('和mysql数据库建立连接失败');
+//     } else {
+//       console.log('和mysql数据库连接成功');
+//       conn.query(sql, (err2, res) => {
+//         if (err2) {
+//           console.log('查询数据库失败',err2);
+//         } else {
+//           console.log(res);
+//           let final = {'flag':'success',res}
+//           result.json(final);
+//           conn.release();
+//           // pool.end();
+//         }
+//       })
+//     }
+//   });
+// })
+
 
 // 根据多个id查询对应的信息
 app.get( `/amineBox/:idBox`,(req,result)=>{
@@ -607,6 +679,9 @@ app.get( `/amineBox/:idBox`,(req,result)=>{
 //     }
 //   })
 // })
+
+
+
 
 // 以下为转发的可用接口
 // 分类动漫列表全部
