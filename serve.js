@@ -551,7 +551,12 @@ app.get( `/updateUser/:id/:name`,(req,result)=>{
 // 用户添加收藏关注的番剧
 app.get( `/addAnime/:animeId/:id/:type`,(req,result)=>{
   console.log('req.params',req.params);
-  let sql = `UPDATE user SET likeGroup = CONCAT(likeGroup,',${req.params.animeId}') WHERE id = ${req.params.id}`;
+  if(req.params.type=='no'){
+    var sql = `UPDATE user SET likeGroup = CONCAT(likeGroup,',${req.params.animeId}') WHERE id = ${req.params.id}`;
+  }else{
+    var sql = `update user set likeGroup=replace(likeGroup,',${req.params.animeId}','') where likeGroup like '%,${req.params.animeId}%';`
+  }
+  
   // 从连接池中获取一个连接
   pool.getConnection((err, conn) => {
     if (err) {
@@ -598,31 +603,6 @@ app.get( `/likeBox/:id`,(req,result)=>{
   });
 })
 
-// 判断用户是否收藏
-// app.get( `/likeGroup/:animeId`,(req,result)=>{
-//   console.log('req.params',req.params);
-//   let sql = `select  *  from user where CHARINDEX('${req.params.animeId}',likeGroup)>0`;
-//   // 从连接池中获取一个连接
-//   pool.getConnection((err, conn) => {
-//     if (err) {
-//       console.log('和mysql数据库建立连接失败');
-//     } else {
-//       console.log('和mysql数据库连接成功');
-//       conn.query(sql, (err2, res) => {
-//         if (err2) {
-//           console.log('查询数据库失败',err2);
-//         } else {
-//           console.log(res);
-//           let final = {'flag':'success',res}
-//           result.json(final);
-//           conn.release();
-//           // pool.end();
-//         }
-//       })
-//     }
-//   });
-// })
-
 
 // 根据多个id查询对应的信息
 app.get( `/amineBox/:idBox`,(req,result)=>{
@@ -643,6 +623,33 @@ app.get( `/amineBox/:idBox`,(req,result)=>{
           result.json(final);
           conn.release();
           // pool.end();
+        }
+      })
+    }
+  });
+})
+
+// 提交评论评分
+app.post( `/addComment`,(req,result)=>{
+  console.log('req',req.body);
+  
+  let sql = `insert into comment(id,time,userName,avatar,content,userId,score) values('${req.body.id}',${req.body.time},'${req.body.userName}','${req.body.avatar}','${req.body.content}','${req.body.userId}','${req.body.score}');`
+    
+  // 从连接池中获取一个连接
+  pool.getConnection((err, conn) => {
+    if (err) {
+      console.log('和mysql数据库建立连接失败');
+    } else {
+      console.log('和mysql数据库连接成功');
+      conn.query(sql, (err1, res1) => {
+        if (err1) {
+          console.log('查询数据库失败err1',err1);
+        } else {
+          console.log(res1);
+          let final = {'flag':'success',res1}
+          console.log('result',final);
+          result.json(final);
+          conn.release();
         }
       })
     }
