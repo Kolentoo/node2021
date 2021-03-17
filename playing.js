@@ -217,7 +217,7 @@ const schedule = require('node-schedule');
 
 
     // 获取正在热映电影信息 每天4点更新
-    schedule.scheduleJob('0 0 4 * * *', async() => {
+    schedule.scheduleJob('0 23 16 * * *', async() => {
         await page.goto('https://movie.douban.com/cinema/nowplaying/shanghai/');
         await page.setViewport({
             width: 1920,
@@ -282,63 +282,63 @@ const schedule = require('node-schedule');
         })
     });
 
-    // 获取即将上映电影信息 每天6点更新
-    schedule.scheduleJob('0 0 5 * * *', async() => {
-        await page.goto('https://movie.douban.com/cinema/later/shanghai/');
-        await page.setViewport({
-            width: 1920,
-            height: 1080
-        });
+    // 获取即将上映电影信息 每天5点更新
+    // schedule.scheduleJob('0 0 5 * * *', async() => {
+    //     await page.goto('https://movie.douban.com/cinema/later/shanghai/');
+    //     await page.setViewport({
+    //         width: 1920,
+    //         height: 1080
+    //     });
 
-        const commingBox = await page.evaluate(() => {
-            // 获取图片
-            const box1 = document.querySelectorAll('#showing-soon .item');
-            // 返回获取图片集合的src地址
-            return Array.prototype.map.call(box1, item => {
-                return {
-                    id: item.querySelector('.thumb').href.replace(/[^\d]/g, ''),
-                    href: item.querySelector('.thumb img').src ? item.querySelector('.thumb img').src.replace('webp', 'jpg') : '',
-                    title: item.querySelector('.intro a').textContent,
-                    playTime: item.querySelectorAll('.dt')[0].textContent,
-                    type: item.querySelectorAll('.dt')[1].textContent,
-                    country: item.querySelectorAll('.dt')[2].textContent,
-                }
-            })
-        });
+    //     const commingBox = await page.evaluate(() => {
+    //         // 获取图片
+    //         const box1 = document.querySelectorAll('#showing-soon .item');
+    //         // 返回获取图片集合的src地址
+    //         return Array.prototype.map.call(box1, item => {
+    //             return {
+    //                 id: item.querySelector('.thumb').href.replace(/[^\d]/g, ''),
+    //                 href: item.querySelector('.thumb img').src ? item.querySelector('.thumb img').src.replace('webp', 'jpg') : '',
+    //                 title: item.querySelector('.intro a').textContent,
+    //                 playTime: item.querySelectorAll('.dt')[0].textContent,
+    //                 type: item.querySelectorAll('.dt')[1].textContent,
+    //                 country: item.querySelectorAll('.dt')[2].textContent,
+    //             }
+    //         })
+    //     });
 
-        var commingData = [];
-        commingBox.map(current => {
-            commingData.push([current.id, current.href, current.title, current.playTime, current.type,
-                current.country
-            ]);
-        });
+    //     var commingData = [];
+    //     commingBox.map(current => {
+    //         commingData.push([current.id, current.href, current.title, current.playTime, current.type,
+    //             current.country
+    //         ]);
+    //     });
 
-        console.log('commingData', commingData);
-        // await page.waitFor(2000);
-        await browser.close();
+    //     console.log('commingData', commingData);
+    //     // await page.waitFor(2000);
+    //     await browser.close();
 
-        db.query(`use kolento`, [commingData], function(err1, result1) {
-            if (err1) {
-                console.log('err1', err1);
-            } else {
-                console.log('result1', result1)
-                db.query(`truncate table commingbox`, [commingData], function(err2, result2) {
-                    if (err2) {
-                        console.log('err2', err2);
-                    } else {
-                        console.log('result2', result2)
-                        db.query(`INSERT INTO commingbox(id,href,title,playTime,type,country) VALUES ?`, [commingData], function(err3, result3) {
-                            if (err3) {
-                                console.log('err3', err3);
-                            } else {
-                                console.log('result3', result3);
-                            }
-                        })
-                    }
-                })
-            }
-        })
-    });
+    //     db.query(`use kolento`, [commingData], function(err1, result1) {
+    //         if (err1) {
+    //             console.log('err1', err1);
+    //         } else {
+    //             console.log('result1', result1)
+    //             db.query(`truncate table commingbox`, [commingData], function(err2, result2) {
+    //                 if (err2) {
+    //                     console.log('err2', err2);
+    //                 } else {
+    //                     console.log('result2', result2)
+    //                     db.query(`INSERT INTO commingbox(id,href,title,playTime,type,country) VALUES ?`, [commingData], function(err3, result3) {
+    //                         if (err3) {
+    //                             console.log('err3', err3);
+    //                         } else {
+    //                             console.log('result3', result3);
+    //                         }
+    //                     })
+    //                 }
+    //             })
+    //         }
+    //     })
+    // });
 
 
 
