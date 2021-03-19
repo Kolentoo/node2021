@@ -16,7 +16,7 @@ const schedule = require('node-schedule');
     // 建立数据库连接
     var mysql = require('mysql');
     var db = mysql.createConnection({
-        host: '106.12.132.19',
+        host: '121.5.124.135',
         user: 'root',
         password: '123456',
         port: 3306,
