@@ -16,7 +16,7 @@ const schedule = require('node-schedule');
     // 建立数据库连接
     var mysql = require('mysql');
     var db = mysql.createConnection({
-        host: '121.5.124.135',
+        host: '106.12.132.19',
         user: 'root',
         password: '123456',
         port: 3306,
@@ -82,7 +82,7 @@ const schedule = require('node-schedule');
 
 
     // 获取即将上映电影信息 每天5点更新
-    schedule.scheduleJob('0 24 16 * * *', async() => {
+    // schedule.scheduleJob('0 24 16 * * *', async() => {
         await page.goto('https://movie.douban.com/cinema/later/shanghai/');
         await page.setViewport({
             width: 1920,
@@ -137,7 +137,7 @@ const schedule = require('node-schedule');
                 })
             }
         })
-    });
+    // });
 
 
 
